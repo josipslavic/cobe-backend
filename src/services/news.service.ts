@@ -60,8 +60,6 @@ export class NewsService {
         .sort({ createdAt: -1 })
         .select('-views');
 
-      console.log(newsItems);
-
       frontPageNews = [...frontPageNews, ...newsItems];
     }
 

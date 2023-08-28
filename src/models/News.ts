@@ -1,6 +1,14 @@
-import { IsBoolean, IsIn, IsOptional, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsIn,
+  IsOptional,
+  IsString,
+  MinLength,
+} from 'class-validator';
 import mongoose, { Document, Schema } from 'mongoose';
 import { newsCategories } from '../constants/newsCategories';
+import { Type } from 'class-transformer';
+import 'reflect-metadata';
 
 export interface INews extends Document {
   createdBy: string;
@@ -18,17 +26,21 @@ export interface INews extends Document {
 
 export class NewsDto {
   @IsString()
+  @MinLength(1)
   headline: string;
 
   @IsString()
+  @MinLength(1)
   shortDescription: string;
 
   @IsString()
+  @MinLength(1)
   fullDescription: string;
 
   @IsIn(newsCategories)
   category: string;
 
+  @Type(() => Boolean)
   @IsOptional()
   @IsBoolean()
   isBreakingNews: boolean;

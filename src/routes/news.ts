@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { Router } from 'express';
 import { validateBody } from '../middleware/validateBody';
 import { INews, NewsDto, NewsModel } from '../models/News';
@@ -5,24 +6,28 @@ import { RequestWithUserId, isAuth } from '../middleware/isAuth';
 import { NewsService } from '../services/news.service';
 import { upload } from '../utils/multerUpload';
 import { requireRoles } from '../middleware/requireRoles';
-import { unlink } from 'fs/promises';
-import axios from 'axios';
 import { newsCategories } from '../constants/newsCategories';
+import { isValidMongoId } from '../utils/isValidMongoId';
+import { deleteLocalImage } from '../utils/deleteLocalImage';
 import 'dotenv/config';
 
 export const newsRouter = Router();
 
 newsRouter.get('/front-page', async (req, res) => {
-  console.log('called fornt page');
   const newsService = new NewsService(NewsModel);
   const news = await newsService.getFrontPageNews();
   return res.status(200).json(news);
 });
 
-newsRouter.get('/:newsId', isAuth, async (req, res) => {
+newsRouter.get('/:newsId', async (req, res) => {
   const newsService = new NewsService(NewsModel);
-  const news = await newsService.getNewsById(req.params.newsId);
 
+  if (!isValidMongoId(req.params.newsId))
+    return res
+      .status(400)
+      .json({ errors: ['please enter a valid a mongo id'] });
+
+  const news = await newsService.getNewsById(req.params.newsId);
   if (!news) return res.status(404).json({ errors: ['news not found'] });
 
   await newsService.increaseViewsForNews([news]);
@@ -68,8 +73,12 @@ newsRouter.patch(
   async (req: RequestWithUserId, res) => {
     const newsService = new NewsService(NewsModel);
 
-    const existingNews = await newsService.getNewsById(req.params.newsId);
+    if (!isValidMongoId(req.params.newsId))
+      return res
+        .status(400)
+        .json({ errors: ['please enter a valid a mongo id'] });
 
+    const existingNews = await newsService.getNewsById(req.params.newsId);
     if (!existingNews) {
       return res.status(404).json({ errors: ['news not found'] });
     }
@@ -89,7 +98,7 @@ newsRouter.patch(
       req.user!.fullName! // Full name is guaranteed due to middleware
     );
 
-    req.file?.path && (await unlink(existingNews.imageUrl));
+    req.file?.path && (await deleteLocalImage(existingNews.imageUrl));
 
     return res.status(200).json(news);
   }
@@ -102,15 +111,19 @@ newsRouter.delete(
   async (req: RequestWithUserId, res) => {
     const newsService = new NewsService(NewsModel);
 
-    const existingNews = await newsService.getNewsById(req.params.newsId);
+    if (!isValidMongoId(req.params.newsId))
+      return res
+        .status(400)
+        .json({ errors: ['please enter a valid a mongo id'] });
 
+    const existingNews = await newsService.getNewsById(req.params.newsId);
     if (!existingNews) {
       return res.status(404).json({ errors: ['news not found'] });
     }
 
     await newsService.deleteNews(req.params.newsId);
 
-    await unlink(existingNews.imageUrl);
+    await deleteLocalImage(existingNews.imageUrl);
 
     return res.status(200).json({ message: 'News deleted successfully' });
   }
@@ -169,5 +182,5 @@ newsRouter.post('/populate/:query', async (req, res) => {
 
   const populatedNews = await newsService.populateNews(newsToPopulate);
 
-  return res.status(200).json({ populatedNews });
+  return res.status(201).json({ populatedNews });
 });
