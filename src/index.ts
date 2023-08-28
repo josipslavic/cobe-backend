@@ -4,9 +4,13 @@ import { userRouter } from './routes/user';
 import { newsRouter } from './routes/news';
 import { commentRouter } from './routes/comment';
 import { swaggerDocs } from './swagger-docs';
+import mongoose from 'mongoose';
+import 'dotenv/config';
 
 const app = express();
 const port = 3000;
+
+mongoose.connect(process.env.MONGO_URI as string);
 
 app.use(bodyParser.json());
 
