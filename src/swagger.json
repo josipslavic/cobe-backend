@@ -1,0 +1,774 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Cobe Backend Project",
+    "description": "Authorization token that you can use: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZWM1YTRkMWZlZDliYjIxMDMwOGM0MSIsInJvbGUiOiJhZG1pbiIsImZ1bGxOYW1lIjoiSm9obiBEb2UiLCJhbGlhcyI6IkpEb2UiLCJpYXQiOjE2OTMyMTI0NTksImV4cCI6MTcwNDAxMjQ1OX0.1me_ciNj9t4A1VYiQpJUEILgE2zwXXabFnmMHkP0cqA",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": ["auth"],
+        "summary": "Registers a new user",
+        "description": "Registers a new user with the provided details. Returns token which should be included in the \"Authorization\" header.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "password123"
+                  },
+                  "role": {
+                    "type": "string",
+                    "enum": ["admin", "editor", "guest"]
+                  },
+                  "fullName": {
+                    "type": "string",
+                    "example": "John Doe"
+                  },
+                  "alias": {
+                    "type": "string",
+                    "example": "JDoe"
+                  }
+                },
+                "required": ["email", "password", "role", "alias"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User successfully registered. Returns token which should be included in the \"Authorization\" header.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "user": {
+                    "_id": "64ec5a4d1fed9bb210308c41",
+                    "role": "admin",
+                    "email": "user@example.com",
+                    "password": "$2b$10$AWIPRHxIgzqVfZ9PDwliqOKagVkWvCGIyjWUNvluL0DqF98qa5aCq",
+                    "fullName": "John Doe",
+                    "alias": "JDoe",
+                    "registeredAt": "2024-01-01T12:00:00.007Z",
+                    "__v": 0
+                  },
+                  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZWM1NmNiYjJiZGY3NDMzODFjNGUxMiIsInJvbGUiOiJhZG1pbiIsImZ1bGxOYW1lIjoiSm9obiBEb2UiLCJhbGlhcyI6IkpEb2UiLCJpYXQiOjE2OTMyMTAzMTUsImV4cCI6MTcwNDAxMDMxNX0.uMRZ03a7Mvq3zidqUa3naWs6Tumxya71ooR1I2X2Tsw"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "409": {
+            "description": "Email is already taken"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["auth"],
+        "summary": "Logs the user in",
+        "description": "Logs the user in using their email and password. Returns token which should be included in the \"Authorization\" header.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "password123"
+                  }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "User successfully logged in. Returns token which should be included in the \"Authorization\" header.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "user": {
+                    "_id": "64ec5a4d1fed9bb210308c41",
+                    "role": "admin",
+                    "email": "user@example.com",
+                    "password": "$2b$10$AWIPRHxIgzqVfZ9PDwliqOKagVkWvCGIyjWUNvluL0DqF98qa5aCq",
+                    "fullName": "John Doe",
+                    "alias": "JDoe",
+                    "registeredAt": "2024-01-01T12:00:00.007Z",
+                    "__v": 0
+                  },
+                  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZWM1YTRkMWZlZDliYjIxMDMwOGM0MSIsInJvbGUiOiJhZG1pbiIsImZ1bGxOYW1lIjoiSm9obiBEb2UiLCJhbGlhcyI6IkpEb2UiLCJpYXQiOjE2OTMyMTEyMjcsImV4cCI6MTcwNDAxMTIyN30.CtXTjM2MQFf9Hcexhs9tLa6llg9h9LuvekY3_Jjw3eg"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid credentials"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/news": {
+      "post": {
+        "summary": "Add a news post",
+        "tags": ["news"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "headline": {
+                    "type": "string",
+                    "example": "Example headline"
+                  },
+                  "shortDescription": {
+                    "type": "string",
+                    "example": "Example description"
+                  },
+                  "fullDescription": {
+                    "type": "string",
+                    "example": "Example description"
+                  },
+                  "category": {
+                    "type": "string",
+                    "enum": ["worldwide", "local", "sport"],
+                    "example": "sport"
+                  },
+                  "isBreakingNews": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Only jpeg and png formats are accepted"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "News post created successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "createdBy": "John Doe",
+                  "lastEditedBy": "John Doe",
+                  "headline": "Headline",
+                  "shortDescription": "Example description",
+                  "fullDescription": "Example description",
+                  "imageUrl": "/Users/josipslavic/Desktop/cobe-backend/src/uploads/1693214939814defaultpfp.jpeg",
+                  "category": "sport",
+                  "isBreakingNews": true,
+                  "views": 0,
+                  "_id": "64ec68db27e0e9b4fcec0e61",
+                  "createdAt": "2023-08-28T09:28:59.838Z",
+                  "lastEditedAt": "2023-08-28T09:28:59.838Z",
+                  "__v": 0
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - Invalid input data or breaking news already exists"
+          },
+          "401": {
+            "description": "Unauthorized - Authorization credentials are missing or invalid"
+          }
+        }
+      }
+    },
+    "/news/populate/{query}": {
+      "post": {
+        "summary": "Populate news from external API",
+        "description": "Retrieves news from an external API using the provided query",
+        "tags": ["news"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "query",
+            "in": "path",
+            "required": true,
+            "description": "A query to retrieve news from an external API",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Populated news successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "populatedNews": [
+                    {
+                      "createdBy": "Darren Allan",
+                      "lastEditedBy": "Darren Allan",
+                      "headline": "Retailer listings suggest Intel’s next-gen CPUs could arrive sooner than expected",
+                      "shortDescription": "Raptor Lake Refresh ...",
+                      "fullDescription": "Raptor Lake Refresh processors are expected in October – but might they land earlier in the month than rumored?",
+                      "imageUrl": "https://cdn.mos.cms.futurecdn.net/GKWVgeAwNwbjc4w5LVRz69-1200-80.jpg",
+                      "category": "local",
+                      "createdAt": "2023-08-27T10:29:34.000Z",
+                      "lastEditedAt": "2023-08-27T10:29:34.000Z",
+                      "isBreakingNews": false,
+                      "views": 0,
+                      "_id": "64ec772a170f6c8876313125",
+                      "__v": 0
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "NewsAPI failed to respond",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errors": ["newsapi failed to respond"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/news/front-page": {
+      "get": {
+        "tags": ["news"],
+        "summary": "Fetches front page news",
+        "description": "Fetches up to 4 posts from each category of news and the \"BREAKING NEWS\" post.",
+        "responses": {
+          "200": {
+            "description": "Front page news successfully fetched",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "_id": "64ec5d2d2ed65fb8edffeb69",
+                    "createdBy": "forbes.com",
+                    "lastEditedBy": "forbes.com",
+                    "headline": "Today’s Wordle 799 Hints, Clues And Answer For Sunday, August 27th",
+                    "shortDescription": "Happy Lazy Sunday fo...",
+                    "fullDescription": "Happy Lazy Sunday folks! I’ve decided that every Sunday we’ll take a dive into history before we jump into our Wordle guide. I suppose that’s a bit of laziness on my part. I don’t have to come up with anything clever. I can just recount the famous historical …",
+                    "imageUrl": "https://c.biztoc.com/p/1f691d222f259dd6/s.webp",
+                    "category": "worldwide",
+                    "createdAt": "2023-08-27T08:38:03.000Z",
+                    "lastEditedAt": "2023-08-27T08:38:03.000Z",
+                    "isBreakingNews": false,
+                    "__v": 0
+                  },
+                  {
+                    "_id": "64ec5d2d2ed65fb8edffeb6e",
+                    "createdBy": "webdesk@voanews.com (Reuters)",
+                    "lastEditedBy": "webdesk@voanews.com (Reuters)",
+                    "headline": "Iran Says Uranium Enrichment Continues Based on Domestic Law",
+                    "shortDescription": "Iran's enrichment of...",
+                    "fullDescription": "Iran's enrichment of uranium continues based on a framework established by the country's parliament, nuclear chief Mohammad Eslami said Sunday when asked about reports regarding Tehran slowing down its 60% enrichment.\\n\\n\\n\"Our nuclear enrichment continues based…",
+                    "imageUrl": "https://gdb.voanews.com/01000000-0aff-0242-5234-08dba668b4f7_w1200_r1.jpg",
+                    "category": "worldwide",
+                    "createdAt": "2023-08-27T08:36:17.000Z",
+                    "lastEditedAt": "2023-08-27T08:36:17.000Z",
+                    "isBreakingNews": false,
+                    "__v": 0
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/news/{newsId}": {
+      "get": {
+        "tags": ["news"],
+        "summary": "Get news by ID",
+        "description": "This is the only API endpoint which also includes news post's views.",
+        "parameters": [
+          {
+            "name": "newsId",
+            "in": "path",
+            "required": true,
+            "description": "ID of the news post",
+            "schema": {
+              "type": "string",
+              "example": "64ec6ef3384db374966897ae"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "News post details successfully fetched",
+            "content": {
+              "application/json": {
+                "example": {
+                  "_id": "64ec5d2d2ed65fb8edffeb69",
+                  "createdBy": "forbes.com",
+                  "lastEditedBy": "forbes.com",
+                  "headline": "Today’s Wordle 799 Hints, Clues And Answer For Sunday, August 27th",
+                  "shortDescription": "Happy Lazy Sunday fo...",
+                  "fullDescription": "Happy Lazy Sunday folks! I’ve decided that every Sunday we’ll take a dive into history before we jump into our Wordle guide. I suppose that’s a bit of laziness on my part. I don’t have to come up with anything clever. I can just recount the famous historical …",
+                  "imageUrl": "https://c.biztoc.com/p/1f691d222f259dd6/s.webp",
+                  "category": "worldwide",
+                  "createdAt": "2023-08-27T08:38:03.000Z",
+                  "lastEditedAt": "2023-08-27T08:38:03.000Z",
+                  "isBreakingNews": false,
+                  "views": 1,
+                  "__v": 0
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "News post not found"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Edit a news post",
+        "parameters": [
+          {
+            "name": "newsId",
+            "in": "path",
+            "required": true,
+            "description": "ID of the news post",
+            "schema": {
+              "type": "string",
+              "example": "64ec6ef3384db374966897ae"
+            }
+          }
+        ],
+        "tags": ["news"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "required": ["headline"],
+                    "properties": {
+                      "headline": {
+                        "type": "string",
+                        "example": "Some other example headline"
+                      }
+                    }
+                  },
+                  {
+                    "required": ["shortDescription"],
+                    "properties": {
+                      "shortDescription": {
+                        "type": "string",
+                        "example": "Example description"
+                      }
+                    }
+                  },
+                  {
+                    "required": ["fullDescription"],
+                    "properties": {
+                      "fullDescription": {
+                        "type": "string",
+                        "example": "Example description"
+                      }
+                    }
+                  },
+                  {
+                    "required": ["category"],
+                    "properties": {
+                      "category": {
+                        "type": "string",
+                        "enum": ["worldwide", "local", "sport"],
+                        "example": "sport"
+                      }
+                    }
+                  },
+                  {
+                    "required": ["isBreakingNews"],
+                    "properties": {
+                      "isBreakingNews": {
+                        "type": "boolean",
+                        "example": true
+                      }
+                    }
+                  },
+                  {
+                    "required": ["image"],
+                    "properties": {
+                      "image": {
+                        "type": "string",
+                        "format": "binary",
+                        "description": "Only jpeg and png formats are accepted"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Post edited successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "_id": "64ec6ef3384db374966897ae",
+                  "createdBy": "John Doe",
+                  "lastEditedBy": "John Doe",
+                  "headline": "Another example headline",
+                  "shortDescription": "Another example description",
+                  "fullDescription": "Another example description",
+                  "imageUrl": "/Users/josipslavic/Desktop/cobe-backend/src/uploads/1693216499836defaultpfp.jpeg",
+                  "category": "worldwide",
+                  "isBreakingNews": false,
+                  "views": 1,
+                  "createdAt": "2023-08-28T09:54:59.906Z",
+                  "lastEditedAt": "2023-08-28T09:57:07.063Z",
+                  "__v": 0
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - No input data provided"
+          },
+          "401": {
+            "description": "Unauthorized - Authorization credentials are missing or invalid"
+          },
+          "404": {
+            "description": "News post not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete news by ID",
+        "parameters": [
+          {
+            "name": "newsId",
+            "in": "path",
+            "required": true,
+            "description": "ID of the news post",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": ["news"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "News deleted successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "News deleted successfully"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "News not found"
+          }
+        }
+      }
+    },
+    "/comment/{newsPostId}": {
+      "post": {
+        "tags": ["comment"],
+        "summary": "Leave a comment on a news post",
+        "parameters": [
+          {
+            "name": "newsPostId",
+            "in": "path",
+            "required": true,
+            "description": "ID of the news post on which the comment should be left",
+            "schema": {
+              "type": "string",
+              "example": "64ec772a170f6c8876313125"
+            }
+          }
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "comment": {
+                    "type": "string",
+                    "example": "Some comment"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Comment created successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "comment": "Some comment",
+                  "commenter": "John Doe",
+                  "news": "64ec772a170f6c8876313125",
+                  "_id": "64ec7861237ed8d2f212ec0a",
+                  "createdAt": "2023-08-28T10:35:13.648Z",
+                  "__v": 0
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized - Authorization credentials are missing or invalid"
+          },
+          "404": {
+            "description": "News post not found"
+          }
+        }
+      }
+    },
+    "/comment/{commentId}": {
+      "get": {
+        "tags": ["comment"],
+        "summary": "Get a comment by ID",
+        "parameters": [
+          {
+            "name": "commentId",
+            "in": "path",
+            "required": true,
+            "description": "ID of the comment to retrieve",
+            "schema": {
+              "type": "string",
+              "example": "64ec7ac696c0a4da88f27a19"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comment retrieved successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "_id": "64ec7ac696c0a4da88f27a19",
+                  "comment": "Some comment",
+                  "commenter": "John Doe",
+                  "news": {
+                    "_id": "64ec772a170f6c8876313125",
+                    "createdBy": "Darren Allan",
+                    "lastEditedBy": "Darren Allan",
+                    "headline": "Retailer listings suggest Intel’s next-gen CPUs could arrive sooner than expected",
+                    "shortDescription": "Raptor Lake Refresh ...",
+                    "fullDescription": "Raptor Lake Refresh processors are expected in October – but might they land earlier in the month than rumored?",
+                    "imageUrl": "https://cdn.mos.cms.futurecdn.net/GKWVgeAwNwbjc4w5LVRz69-1200-80.jpg",
+                    "category": "local",
+                    "createdAt": "2023-08-27T10:29:34.000Z",
+                    "lastEditedAt": "2023-08-27T10:29:34.000Z",
+                    "isBreakingNews": false,
+                    "views": 0,
+                    "__v": 0
+                  },
+                  "createdAt": "2023-08-28T10:45:26.534Z",
+                  "__v": 0
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Comment not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["comment"],
+        "summary": "Delete a comment by ID",
+        "parameters": [
+          {
+            "name": "commentId",
+            "in": "path",
+            "required": true,
+            "description": "ID of the comment to delete",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comment deleted successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Comment deleted successfully"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (not logged in or invalid role)"
+          },
+          "404": {
+            "description": "Comment not found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "Authorization": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": ["admin", "editor", "guest"]
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "type": "string"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "alias": {
+            "type": "string"
+          },
+          "registeredAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Comment": {
+        "type": "object",
+        "properties": {
+          "comment": {
+            "type": "string"
+          },
+          "commenter": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "news": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "News": {
+        "type": "object",
+        "properties": {
+          "createdBy": {
+            "type": "string"
+          },
+          "lastEditedBy": {
+            "type": "string"
+          },
+          "headline": {
+            "type": "string"
+          },
+          "shortDescription": {
+            "type": "string"
+          },
+          "fullDescription": {
+            "type": "string"
+          },
+          "imageUrl": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string",
+            "enum": ["worldwide", "local", "sport"]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastEditedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isBreakingNews": {
+            "type": "boolean"
+          },
+          "views": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  }
+}

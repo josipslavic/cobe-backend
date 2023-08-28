@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import { userRouter } from './routes/user';
 import { newsRouter } from './routes/news';
 import { commentRouter } from './routes/comment';
+import { swaggerDocs } from './swagger-docs';
 
 const app = express();
 const port = 3000;
@@ -17,4 +18,5 @@ app.use('/comment', commentRouter);
 
 app.listen(port, () => {
   console.log(`App running on port ${port}`);
+  swaggerDocs(app, port);
 });
