@@ -120,6 +120,9 @@
               }
             }
           },
+          "400": {
+            "description": "Bad request"
+          },
           "401": {
             "description": "Unauthorized - Invalid credentials"
           },
@@ -213,11 +216,6 @@
         "summary": "Populate news from external API",
         "description": "Retrieves news from an external API using the provided query",
         "tags": ["news"],
-        "security": [
-          {
-            "Authorization": []
-          }
-        ],
         "parameters": [
           {
             "name": "query",
@@ -355,6 +353,9 @@
               }
             }
           },
+          "400": {
+            "description": "Invalid id format"
+          },
           "404": {
             "description": "News post not found"
           }
@@ -472,7 +473,7 @@
             }
           },
           "400": {
-            "description": "Bad request - No input data provided"
+            "description": "Bad request - No input data provided or invalid id format"
           },
           "401": {
             "description": "Unauthorized - Authorization credentials are missing or invalid"
@@ -511,6 +512,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid id format"
           },
           "404": {
             "description": "News not found"
@@ -572,7 +576,7 @@
             }
           },
           "400": {
-            "description": "Bad request"
+            "description": "Bad request or invalid id format"
           },
           "401": {
             "description": "Unauthorized - Authorization credentials are missing or invalid"
@@ -629,6 +633,9 @@
               }
             }
           },
+          "400": {
+            "description": "Invalid id format"
+          },
           "404": {
             "description": "Comment not found"
           }
@@ -663,6 +670,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid id format"
           },
           "401": {
             "description": "Unauthorized (not logged in or invalid role)"

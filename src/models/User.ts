@@ -1,4 +1,10 @@
-import { IsEmail, IsIn, IsString, ValidateIf } from 'class-validator';
+import {
+  IsEmail,
+  IsIn,
+  IsString,
+  MinLength,
+  ValidateIf,
+} from 'class-validator';
 import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IUser extends Document {
@@ -15,6 +21,7 @@ export class UserDto {
   email: string;
 
   @IsString()
+  @MinLength(1)
   password: string;
 
   @IsIn(['admin', 'editor', 'guest'])
@@ -22,9 +29,11 @@ export class UserDto {
 
   @ValidateIf((o) => o.role !== 'guest')
   @IsString()
+  @MinLength(1)
   fullName?: string;
 
   @IsString()
+  @MinLength(1)
   alias: string;
 }
 

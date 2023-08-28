@@ -24,7 +24,6 @@ export const isAuth = (
       alias: string;
       fullName?: string;
     };
-    console.log(decoded);
     req.user = {
       id: decoded.id,
       role: decoded.role,

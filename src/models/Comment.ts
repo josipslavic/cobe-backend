@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsString, MinLength } from 'class-validator';
 import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IComment extends Document {
@@ -10,6 +10,7 @@ export interface IComment extends Document {
 
 export class CommentDto {
   @IsString()
+  @MinLength(1)
   comment: string;
 }
 
