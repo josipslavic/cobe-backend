@@ -2,7 +2,6 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Cobe Backend Project",
-    "description": "Authorization token that you can use: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZWM1YTRkMWZlZDliYjIxMDMwOGM0MSIsInJvbGUiOiJhZG1pbiIsImZ1bGxOYW1lIjoiSm9obiBEb2UiLCJhbGlhcyI6IkpEb2UiLCJpYXQiOjE2OTMyMTI0NTksImV4cCI6MTcwNDAxMjQ1OX0.1me_ciNj9t4A1VYiQpJUEILgE2zwXXabFnmMHkP0cqA",
     "version": "1.0.0"
   },
   "paths": {
