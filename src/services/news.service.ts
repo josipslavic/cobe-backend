@@ -36,7 +36,7 @@ export class NewsService {
   ) {
     return await this.newsModel.findOneAndUpdate(
       { _id: newsId },
-      { ...updateNewsDto, lastEditedBy: editorName, lastEditedAt: Date.now() },
+      { ...updateNewsDto, lastEditedBy: editorName, lastEditedAt: Date.now() }, // TODO: How can you handle different time zones?
       { new: true }
     );
   }
@@ -53,7 +53,7 @@ export class NewsService {
     if (breakingNews) frontPageNews.push(breakingNews);
 
     // Get up to 4 news from each category
-    for (const category of newsCategories) {
+    for (const category of newsCategories) { // TODO: What if some of the categories returns error?
       const newsItems = await this.newsModel
         .find({ category })
         .limit(4)

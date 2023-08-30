@@ -25,7 +25,7 @@ export class UserDto {
   password: string;
 
   @IsIn(['admin', 'editor', 'guest'])
-  role: 'admin' | 'editor' | 'guest';
+  role: 'admin' | 'editor' | 'guest'; // TODO: enum
 
   @ValidateIf((o) => o.role !== 'guest')
   @IsString()

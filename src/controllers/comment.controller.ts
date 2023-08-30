@@ -17,7 +17,7 @@ export class CommentController {
 
   getCommentById = async (req: Request, res: Response) => {
     if (!isValidMongoId(req.params.commentId))
-      return res.status(400).json({ errors: [INVALID_MONGO_ID] });
+      return res.status(400).json({ errors: [INVALID_MONGO_ID] }); // TODO: Remove all semicolons 
 
     const comment = await this.commentService.getCommentById(
       req.params.commentId

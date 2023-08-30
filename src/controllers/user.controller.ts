@@ -22,7 +22,7 @@ export class UserController {
       },
       process.env.JWT_KEY as string,
       {
-        expiresIn: '3000h', // large number for testing
+        expiresIn: '3000h', // large number for testing  // TODO: Set it in some config variable
       }
     );
 

@@ -12,7 +12,7 @@ export function validateBody<T extends object>(
       whitelist: true,
       skipMissingProperties: makeAllOptional,
     });
-    if (makeAllOptional && Object.keys(data).length === 0)
+    if (makeAllOptional && Object.keys(data).length === 0) // TODO: We don't need to compare length with 0
       return res.status(400).json({
         errors: ['you have to provide at least one value'],
       });
