@@ -1,7 +1,7 @@
 import { IsString, MinLength } from 'class-validator';
 import mongoose, { Document, Schema } from 'mongoose';
 
-export interface IComment extends Document {
+export interface IComment extends Document { // TODO: extract interface
   comment: string;
   commenter: string;
   news: mongoose.ObjectIdSchemaDefinition;

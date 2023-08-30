@@ -12,7 +12,7 @@ export class UserService {
   }
 
   async createUser(createUserDto: UserDto) {
-    createUserDto.password = await hash(createUserDto.password, 10);
+    createUserDto.password = await hash(createUserDto.password, 10); // TODO: Extract this hashing into helper function
     const user = await this.userModel.create({ ...createUserDto });
     return await user.save();
   }

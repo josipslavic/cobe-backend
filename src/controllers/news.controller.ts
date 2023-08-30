@@ -98,8 +98,8 @@ export class NewsController {
 
   populateData = async (req: Request, res: Response) => {
     const { data } = (await axios.get(
-      `https://newsapi.org/v2/everything?q=${req.params.query}&sortBy=publishedAt&apiKey=${process.env.NEWSAPI_KEY}`
-    )) as {
+      `https://newsapi.org/v2/everything?q=${req.params.query}&sortBy=publishedAt&apiKey=${process.env.NEWSAPI_KEY}`    // TODO: Handle this through some config variables.
+    )) as { // TODO: Is it possible to have this model extracted somehow in a separate file?
       data: {
         status: string;
         articles: {
@@ -126,15 +126,15 @@ export class NewsController {
       if (!article.description) article.description = ' ';
       if (!article.urlToImage)
         article.urlToImage =
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/681px-Placeholder_view_vector.svg.png';
-      if (!article.author) article.author = 'Unkown author';
+          'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/681px-Placeholder_view_vector.svg.png';    // TODO: We don't want to have external url-s for pictures.
+      if (!article.author) article.author = 'Unkown author'; // TODO: Set default values in one place so you can change them later easily
 
       return {
         createdBy: article.author,
         lastEditedBy: article.author,
         headline: article.title,
         shortDescription:
-          article.description.length > 20
+          article.description.length > 20  // TODO: Set default values in one place so you can change them later easily
             ? article.description.slice(0, 20) + '...'
             : article.description,
         fullDescription: article.description,
