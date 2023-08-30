@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { IComment, CommentDto } from '../models/Comment';
+import { IComment, CommentDto, CommentModel } from '../models/Comment';
 
 export class CommentService {
   constructor(public readonly commentModel: Model<IComment>) {
@@ -27,3 +27,5 @@ export class CommentService {
     return await this.commentModel.findOneAndRemove({ _id: commentId }).exec();
   }
 }
+
+export const commentService = new CommentService(CommentModel);

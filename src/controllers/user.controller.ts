@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { UserService } from '../services/user.service';
+import { UserService, userService } from '../services/user.service';
 import { compare } from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-export class UserController {
+class UserController {
   constructor(private userService: UserService) {}
 
   register = async (req: Request, res: Response) => {
@@ -66,3 +66,5 @@ export class UserController {
     return res.status(200).json({ user: existingUser, token });
   };
 }
+
+export const userController = new UserController(userService);

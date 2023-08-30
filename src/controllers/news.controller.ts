@@ -1,4 +1,4 @@
-import { NewsService } from '../services/news.service';
+import { NewsService, newsService } from '../services/news.service';
 import { Request, Response } from 'express';
 import { isValidMongoId } from '../utils/isValidMongoId';
 import { RequestWithUserId } from '../middleware/isAuth';
@@ -13,7 +13,7 @@ import {
   NEWS_NOT_FOUND,
 } from '../constants/messages';
 
-export class NewsController {
+class NewsController {
   constructor(private newsService: NewsService) {}
 
   getNewsById = async (req: Request, res: Response) => {
@@ -98,8 +98,9 @@ export class NewsController {
 
   populateData = async (req: Request, res: Response) => {
     const { data } = (await axios.get(
-      `https://newsapi.org/v2/everything?q=${req.params.query}&sortBy=publishedAt&apiKey=${process.env.NEWSAPI_KEY}`    // TODO: Handle this through some config variables.
-    )) as { // TODO: Is it possible to have this model extracted somehow in a separate file?
+      `https://newsapi.org/v2/everything?q=${req.params.query}&sortBy=publishedAt&apiKey=${process.env.NEWSAPI_KEY}` // TODO: Handle this through some config variables.
+    )) as {
+      // TODO: Is it possible to have this model extracted somehow in a separate file?
       data: {
         status: string;
         articles: {
@@ -126,7 +127,7 @@ export class NewsController {
       if (!article.description) article.description = ' ';
       if (!article.urlToImage)
         article.urlToImage =
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/681px-Placeholder_view_vector.svg.png';    // TODO: We don't want to have external url-s for pictures.
+          'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/681px-Placeholder_view_vector.svg.png'; // TODO: We don't want to have external url-s for pictures.
       if (!article.author) article.author = 'Unkown author'; // TODO: Set default values in one place so you can change them later easily
 
       return {
@@ -134,7 +135,7 @@ export class NewsController {
         lastEditedBy: article.author,
         headline: article.title,
         shortDescription:
-          article.description.length > 20  // TODO: Set default values in one place so you can change them later easily
+          article.description.length > 20 // TODO: Set default values in one place so you can change them later easily
             ? article.description.slice(0, 20) + '...'
             : article.description,
         fullDescription: article.description,
@@ -151,3 +152,5 @@ export class NewsController {
     return res.status(201).json({ populatedNews });
   };
 }
+
+export const newsController = new NewsController(newsService);

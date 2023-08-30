@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { IUser, UserDto } from '../models/User';
+import { IUser, UserDto, UserModel } from '../models/User';
 import { hash } from 'bcrypt';
 
 export class UserService {
@@ -17,3 +17,5 @@ export class UserService {
     return await user.save();
   }
 }
+
+export const userService = new UserService(UserModel);

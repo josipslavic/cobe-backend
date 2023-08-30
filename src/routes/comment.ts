@@ -1,18 +1,11 @@
 import { Router } from 'express';
 import { validateBody } from '../middleware/validateBody';
-import { CommentDto, CommentModel } from '../models/Comment';
+import { CommentDto } from '../models/Comment';
 import { isAuth } from '../middleware/isAuth';
-import { CommentService } from '../services/comment.service';
 import { requireRoles } from '../middleware/requireRoles';
-import { NewsService } from '../services/news.service';
-import { NewsModel } from '../models/News';
-import { CommentController } from '../controllers/comment.controller';
+import { commentController } from '../controllers/comment.controller';
 
 export const commentRouter = Router();
-
-const commentService = new CommentService(CommentModel);
-const newsService = new NewsService(NewsModel);
-const commentController = new CommentController(commentService, newsService);
 
 commentRouter.get('/:commentId', commentController.getCommentById);
 
