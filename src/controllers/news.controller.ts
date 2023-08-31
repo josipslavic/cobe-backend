@@ -11,7 +11,10 @@ import {
   BREAKING_NEWS_LIMIT,
   INVALID_MONGO_ID,
   NEWS_NOT_FOUND,
-} from '../constants/messages';
+} from '../constants/error-messages';
+import { DELETE_SUCCESS } from '../constants/messages';
+import { newsPlaceholders } from '../constants/placeholders';
+import { SHORTENED_ARTICLE_MAX_LENGTH } from '../constants/numbers';
 
 export class NewsController {
   constructor(private newsService: NewsService) {}
@@ -87,7 +90,7 @@ export class NewsController {
 
     await deleteLocalImage(existingNews.imageUrl);
 
-    return res.status(200).json({ message: 'News deleted successfully' });
+    return res.status(200).json({ message: DELETE_SUCCESS });
   };
 
   getFrontPage = async (req: Request, res: Response) => {
@@ -98,8 +101,9 @@ export class NewsController {
 
   populateData = async (req: Request, res: Response) => {
     const { data } = (await axios.get(
-      `https://newsapi.org/v2/everything?q=${req.params.query}&sortBy=publishedAt&apiKey=${process.env.NEWSAPI_KEY}`    // TODO: Handle this through some config variables.
-    )) as { // TODO: Is it possible to have this model extracted somehow in a separate file?
+      `${process.env.NEWSAPI_BASE_URL}/everything?q=${req.params.query}&sortBy=publishedAt&apiKey=${process.env.NEWSAPI_KEY}` // TODO: Handle this through some config variables.
+    )) as {
+      // TODO: Is it possible to have this model extracted somehow in a separate file?
       data: {
         status: string;
         articles: {
@@ -123,19 +127,18 @@ export class NewsController {
 
     const newsToPopulate: Partial<INews>[] = data.articles.map((article) => {
       // Add placeholders because all of these vaules can be empty
-      if (!article.description) article.description = ' ';
-      if (!article.urlToImage)
-        article.urlToImage =
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/681px-Placeholder_view_vector.svg.png';    // TODO: We don't want to have external url-s for pictures.
-      if (!article.author) article.author = 'Unkown author'; // TODO: Set default values in one place so you can change them later easily
+      if (!article.description)
+        article.description = newsPlaceholders.description;
+      if (!article.urlToImage) article.urlToImage = newsPlaceholders.urlToImage;
+      if (!article.author) article.author = newsPlaceholders.author;
 
       return {
         createdBy: article.author,
         lastEditedBy: article.author,
         headline: article.title,
         shortDescription:
-          article.description.length > 20  // TODO: Set default values in one place so you can change them later easily
-            ? article.description.slice(0, 20) + '...'
+          article.description.length > SHORTENED_ARTICLE_MAX_LENGTH
+            ? article.description.slice(0, SHORTENED_ARTICLE_MAX_LENGTH) + '...'
             : article.description,
         fullDescription: article.description,
         createdAt: new Date(article.publishedAt),

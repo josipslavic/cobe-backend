@@ -7,7 +7,8 @@ import {
   COMMENT_NOT_FOUND,
   INVALID_MONGO_ID,
   NEWS_NOT_FOUND,
-} from '../constants/messages';
+} from '../constants/error-messages';
+import { DELETE_SUCCESS } from '../constants/messages';
 
 export class CommentController {
   constructor(
@@ -17,7 +18,7 @@ export class CommentController {
 
   getCommentById = async (req: Request, res: Response) => {
     if (!isValidMongoId(req.params.commentId))
-      return res.status(400).json({ errors: [INVALID_MONGO_ID] }); // TODO: Remove all semicolons 
+      return res.status(400).json({ errors: [INVALID_MONGO_ID] }); // TODO: Remove all semicolons
 
     const comment = await this.commentService.getCommentById(
       req.params.commentId
@@ -56,6 +57,6 @@ export class CommentController {
 
     await this.commentService.deleteComment(req.params.commentId);
 
-    return res.status(200).json({ message: 'Comment deleted successfully' });
+    return res.status(200).json({ message: DELETE_SUCCESS });
   };
 }
