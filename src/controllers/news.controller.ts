@@ -15,6 +15,7 @@ import {
 import { DELETE_SUCCESS } from '../constants/messages';
 import { newsPlaceholders } from '../constants/placeholders';
 import { SHORTENED_ARTICLE_MAX_LENGTH } from '../constants/numbers';
+import { trimDescription } from '../utils/trimDescription';
 
 export class NewsController {
   constructor(private newsService: NewsService) {}
@@ -136,10 +137,7 @@ export class NewsController {
         createdBy: article.author,
         lastEditedBy: article.author,
         headline: article.title,
-        shortDescription:
-          article.description.length > SHORTENED_ARTICLE_MAX_LENGTH
-            ? article.description.slice(0, SHORTENED_ARTICLE_MAX_LENGTH) + '...'
-            : article.description,
+        shortDescription: trimDescription(article.description),
         fullDescription: article.description,
         createdAt: new Date(article.publishedAt),
         lastEditedAt: new Date(article.publishedAt),
