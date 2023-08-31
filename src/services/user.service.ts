@@ -1,6 +1,6 @@
 import { Model } from 'mongoose';
 import { IUser, UserDto } from '../models/User';
-import { hash } from 'bcrypt';
+import { hashPassword } from '../utils/hashPassword';
 
 export class UserService {
   constructor(public readonly userModel: Model<IUser>) {
@@ -12,7 +12,7 @@ export class UserService {
   }
 
   async createUser(createUserDto: UserDto) {
-    createUserDto.password = await hash(createUserDto.password, 10); // TODO: Extract this hashing into helper function
+    createUserDto.password = await hashPassword(createUserDto.password);
     const user = await this.userModel.create({ ...createUserDto });
     return await user.save();
   }
