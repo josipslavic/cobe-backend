@@ -1,15 +1,8 @@
 import jwt from 'jsonwebtoken';
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import 'dotenv/config';
-
-export interface RequestWithUserId extends Request { // TODO: Extract interfaces into interfaces folder
-  user?: {
-    id: string;
-    role: 'admin' | 'editor' | 'guest'; // TODO: Extract roles into enum so they can be easily manipulated
-    alias: string;
-    fullName?: string;
-  };
-}
+import { RequestWithUserId } from '../interfaces/requestWithUserId';
+import { IJwt } from '../interfaces/jwt';
 
 export const isAuth = (
   req: RequestWithUserId,
@@ -18,12 +11,7 @@ export const isAuth = (
 ) => {
   try {
     const token = req.headers.authorization || '';
-    const decoded = jwt.verify(token, process.env.JWT_KEY as string) as { // TODO: Define this as an interface
-      id: string;
-      role: 'admin' | 'editor' | 'guest';
-      alias: string;
-      fullName?: string;
-    };
+    const decoded = jwt.verify(token, process.env.JWT_KEY as string) as IJwt;
     req.user = {
       id: decoded.id,
       role: decoded.role,

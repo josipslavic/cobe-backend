@@ -1,6 +1,7 @@
 import { Model } from 'mongoose';
-import { INews, NewsDto } from '../models/News';
+import { NewsDto } from '../models/News';
 import { newsCategories } from '../constants/newsCategories';
+import { INews } from '../interfaces/news';
 
 export class NewsService {
   constructor(public readonly newsModel: Model<INews>) {
@@ -53,7 +54,8 @@ export class NewsService {
     if (breakingNews) frontPageNews.push(breakingNews);
 
     // Get up to 4 news from each category
-    for (const category of newsCategories) { // TODO: What if some of the categories returns error?
+    for (const category of newsCategories) {
+      // TODO: What if some of the categories returns error?
       const newsItems = await this.newsModel
         .find({ category })
         .limit(4)

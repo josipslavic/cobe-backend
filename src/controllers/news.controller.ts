@@ -1,10 +1,8 @@
 import { NewsService } from '../services/news.service';
 import { Request, Response } from 'express';
 import { isValidMongoId } from '../utils/isValidMongoId';
-import { RequestWithUserId } from '../middleware/isAuth';
 import { deleteLocalImage } from '../utils/deleteLocalImage';
 import { newsCategories } from '../constants/newsCategories';
-import { INews } from '../models/News';
 import axios from 'axios';
 import 'dotenv/config';
 import {
@@ -12,6 +10,9 @@ import {
   INVALID_MONGO_ID,
   NEWS_NOT_FOUND,
 } from '../constants/messages';
+import { INewsAPIData } from '../interfaces/newsApiData';
+import { RequestWithUserId } from '../interfaces/requestWithUserId';
+import { INews } from '../interfaces/news';
 
 export class NewsController {
   constructor(private newsService: NewsService) {}
@@ -98,25 +99,8 @@ export class NewsController {
 
   populateData = async (req: Request, res: Response) => {
     const { data } = (await axios.get(
-      `https://newsapi.org/v2/everything?q=${req.params.query}&sortBy=publishedAt&apiKey=${process.env.NEWSAPI_KEY}`    // TODO: Handle this through some config variables.
-    )) as { // TODO: Is it possible to have this model extracted somehow in a separate file?
-      data: {
-        status: string;
-        articles: {
-          source: {
-            id: string | null;
-            name: string;
-          };
-          author: string;
-          title: string;
-          description: string;
-          url: string;
-          urlToImage: string;
-          publishedAt: string;
-          content: string;
-        }[];
-      };
-    };
+      `https://newsapi.org/v2/everything?q=${req.params.query}&sortBy=publishedAt&apiKey=${process.env.NEWSAPI_KEY}` // TODO: Handle this through some config variables.
+    )) as INewsAPIData;
 
     if (data.status !== 'ok')
       return res.status(500).json({ errors: ['newsapi failed to respond'] });
@@ -126,7 +110,7 @@ export class NewsController {
       if (!article.description) article.description = ' ';
       if (!article.urlToImage)
         article.urlToImage =
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/681px-Placeholder_view_vector.svg.png';    // TODO: We don't want to have external url-s for pictures.
+          'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/681px-Placeholder_view_vector.svg.png'; // TODO: We don't want to have external url-s for pictures.
       if (!article.author) article.author = 'Unkown author'; // TODO: Set default values in one place so you can change them later easily
 
       return {
@@ -134,7 +118,7 @@ export class NewsController {
         lastEditedBy: article.author,
         headline: article.title,
         shortDescription:
-          article.description.length > 20  // TODO: Set default values in one place so you can change them later easily
+          article.description.length > 20 // TODO: Set default values in one place so you can change them later easily
             ? article.description.slice(0, 20) + '...'
             : article.description,
         fullDescription: article.description,

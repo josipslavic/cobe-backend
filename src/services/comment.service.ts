@@ -1,5 +1,6 @@
 import { Model } from 'mongoose';
-import { IComment, CommentDto } from '../models/Comment';
+import { CommentDto } from '../models/Comment';
+import { IComment } from '../interfaces/comment';
 
 export class CommentService {
   constructor(public readonly commentModel: Model<IComment>) {

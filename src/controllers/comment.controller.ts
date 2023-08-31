@@ -1,13 +1,13 @@
 import { CommentService } from '../services/comment.service';
 import { Request, Response } from 'express';
 import { isValidMongoId } from '../utils/isValidMongoId';
-import { RequestWithUserId } from '../middleware/isAuth';
 import { NewsService } from '../services/news.service';
 import {
   COMMENT_NOT_FOUND,
   INVALID_MONGO_ID,
   NEWS_NOT_FOUND,
 } from '../constants/messages';
+import { RequestWithUserId } from '../interfaces/requestWithUserId';
 
 export class CommentController {
   constructor(
@@ -17,7 +17,7 @@ export class CommentController {
 
   getCommentById = async (req: Request, res: Response) => {
     if (!isValidMongoId(req.params.commentId))
-      return res.status(400).json({ errors: [INVALID_MONGO_ID] }); // TODO: Remove all semicolons 
+      return res.status(400).json({ errors: [INVALID_MONGO_ID] }); // TODO: Remove all semicolons
 
     const comment = await this.commentService.getCommentById(
       req.params.commentId
