@@ -1,0 +1,1 @@
+export const SHORTENED_ARTICLE_MAX_LENGTH = 20;

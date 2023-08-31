@@ -503,11 +503,11 @@
         ],
         "responses": {
           "200": {
-            "description": "News deleted successfully",
+            "description": "Deleted successfully",
             "content": {
               "application/json": {
                 "example": {
-                  "message": "News deleted successfully"
+                  "message": "Deleted successfully"
                 }
               }
             }
@@ -661,11 +661,11 @@
         ],
         "responses": {
           "200": {
-            "description": "Comment deleted successfully",
+            "description": "Deleted successfully",
             "content": {
               "application/json": {
                 "example": {
-                  "message": "Comment deleted successfully"
+                  "message": "Deleted successfully"
                 }
               }
             }
