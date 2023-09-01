@@ -53,17 +53,19 @@ export class NewsService {
     if (breakingNews) frontPageNews.push(breakingNews);
 
     // Get up to 4 news from each category
-    newsCategories.forEach((category) => {
-      this.newsModel
-        .find({ category })
-        .limit(4)
-        .sort({ createdAt: -1 })
-        .select('-views')
-        .then((newsItems) => {
-          frontPageNews = [...frontPageNews, ...newsItems];
-        })
-        .catch((error) => console.error(error));
-    });
+    for (const category of newsCategories) {
+      try {
+        const newsItems = await this.newsModel
+          .find({ category })
+          .limit(4)
+          .sort({ createdAt: -1 })
+          .select('-views');
+
+        frontPageNews = [...frontPageNews, ...newsItems];
+      } catch (err) {
+        console.error(err);
+      }
+    }
 
     await this.increaseViewsForNews(frontPageNews);
 
