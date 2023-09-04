@@ -4,9 +4,7 @@ export const PERMISSION_DENIED = "you don't have permission to do this action";
 
 export const AUTH_FAILED = 'auth failed';
 
-export const USER_EMAIL_NOT_FOUND = "user with that email doesn't exist";
-
-export const INVALID_PASSWORD = 'invalid password';
+export const INVALID_CREDENTIALS = 'invalid email or password';
 
 export const INVALID_MONGO_ID = 'please enter a valid mongo id';
 
