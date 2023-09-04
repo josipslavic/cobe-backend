@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { UserService } from '../services/user.service';
 import { compare } from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { AUTH_FAILED, INVALID_CREDENTIALS } from '../constants/error-messages';
+import * as ERROR_MESSAGES from '../constants/error-messages';
 
 export class UserController {
   constructor(private userService: UserService) {}
@@ -32,11 +32,13 @@ export class UserController {
 
   login = async (req: Request, res: Response) => {
     if (!req.body.email || !req.body.password)
-      return res.status(400).json({ errors: [AUTH_FAILED] });
+      return res.status(400).json({ errors: [ERROR_MESSAGES.AUTH_FAILED] });
 
     const existingUser = await this.userService.findUserByEmail(req.body.email);
     if (!existingUser)
-      return res.status(404).json({ errors: [INVALID_CREDENTIALS] });
+      return res
+        .status(404)
+        .json({ errors: [ERROR_MESSAGES.INVALID_CREDENTIALS] });
 
     const isPasswordMatching = await compare(
       req.body.password,
@@ -44,7 +46,9 @@ export class UserController {
     );
 
     if (!isPasswordMatching) {
-      return res.status(401).json({ errors: [INVALID_CREDENTIALS] });
+      return res
+        .status(401)
+        .json({ errors: [ERROR_MESSAGES.INVALID_CREDENTIALS] });
     }
 
     const token = jwt.sign(
