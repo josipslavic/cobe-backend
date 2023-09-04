@@ -14,7 +14,10 @@ import {
 } from '../constants/error-messages';
 import { DELETE_SUCCESS } from '../constants/messages';
 import { newsPlaceholders } from '../constants/placeholders';
-import { SHORTENED_ARTICLE_MAX_LENGTH } from '../constants/numbers';
+import {
+  SHORTENED_ARTICLE_MAX_LENGTH,
+  SHORTENED_ARTICLE_MIN_LENGTH,
+} from '../constants/numbers';
 
 export class NewsController {
   constructor(private newsService: NewsService) {}
@@ -138,7 +141,10 @@ export class NewsController {
         headline: article.title,
         shortDescription:
           article.description.length > SHORTENED_ARTICLE_MAX_LENGTH
-            ? article.description.slice(0, SHORTENED_ARTICLE_MAX_LENGTH) + '...'
+            ? article.description.slice(
+                SHORTENED_ARTICLE_MIN_LENGTH,
+                SHORTENED_ARTICLE_MAX_LENGTH
+              ) + '...'
             : article.description,
         fullDescription: article.description,
         createdAt: new Date(article.publishedAt),
