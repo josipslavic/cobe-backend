@@ -15,7 +15,8 @@ const CommentSchema = new Schema<IComment>(
       required: true,
     },
     commenter: {
-      type: String,
+      type: mongoose.Types.ObjectId,
+      ref: 'User',
       required: true,
     },
     createdAt: {

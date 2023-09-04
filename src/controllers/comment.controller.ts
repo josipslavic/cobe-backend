@@ -37,7 +37,7 @@ export class CommentController {
 
     const comment = await this.commentService.createComment(
       req.body,
-      req.user!.fullName || req.user!.alias, // alias required in case user is a guest
+      req.user!.id,
       req.params.newsId as string
     );
 

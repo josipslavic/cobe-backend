@@ -8,17 +8,19 @@ export class CommentService {
   }
 
   async getCommentById(id: string) {
-    return await this.commentModel.findOne({ _id: id }).populate('news');
+    return await this.commentModel
+      .findOne({ _id: id })
+      .populate(['commenter', 'news']);
   }
 
   async createComment(
     createCommentDto: CommentDto,
-    commenter: string,
+    commetnerId: string,
     newsId: string
   ) {
     const comment = await this.commentModel.create({
       ...createCommentDto,
-      commenter,
+      commenter: commetnerId,
       news: newsId,
     });
     return await comment.save();
