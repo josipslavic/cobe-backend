@@ -7,12 +7,8 @@ import { newsCategories } from '../constants/newsCategories';
 import { INews } from '../models/News';
 import axios from 'axios';
 import 'dotenv/config';
-import {
-  BREAKING_NEWS_LIMIT,
-  INVALID_MONGO_ID,
-  NEWS_NOT_FOUND,
-} from '../constants/error-messages';
-import { DELETE_SUCCESS } from '../constants/messages';
+import * as ERROR_MESSAGES from '../constants/error-messages';
+import * as MESSAGES from '../constants/messages';
 import { newsPlaceholders } from '../constants/placeholders';
 import {
   SHORTENED_ARTICLE_MAX_LENGTH,
@@ -24,10 +20,13 @@ export class NewsController {
 
   getNewsById = async (req: Request, res: Response) => {
     if (!isValidMongoId(req.params.newsId))
-      return res.status(400).json({ errors: [INVALID_MONGO_ID] });
+      return res
+        .status(400)
+        .json({ errors: [ERROR_MESSAGES.INVALID_MONGO_ID] });
 
     const news = await this.newsService.getNewsById(req.params.newsId);
-    if (!news) return res.status(404).json({ errors: [NEWS_NOT_FOUND] });
+    if (!news)
+      return res.status(404).json({ errors: [ERROR_MESSAGES.NEWS_NOT_FOUND] });
 
     await this.newsService.increaseViewsForNews([news]);
 
@@ -42,7 +41,9 @@ export class NewsController {
     if (req.body.isBreakingNews) {
       const existingBreakingNews = await this.newsService.getBreakingNews();
       if (existingBreakingNews)
-        return res.status(400).json({ errors: [BREAKING_NEWS_LIMIT] });
+        return res
+          .status(400)
+          .json({ errors: [ERROR_MESSAGES.BREAKING_NEWS_LIMIT] });
     }
 
     const news = await this.newsService.createNews(
@@ -55,18 +56,22 @@ export class NewsController {
 
   updateNews = async (req: RequestWithUserId, res: Response) => {
     if (!isValidMongoId(req.params.newsId))
-      return res.status(400).json({ errors: [INVALID_MONGO_ID] });
+      return res
+        .status(400)
+        .json({ errors: [ERROR_MESSAGES.INVALID_MONGO_ID] });
 
     const existingNews = await this.newsService.getNewsById(req.params.newsId);
     if (!existingNews) {
-      return res.status(404).json({ errors: [NEWS_NOT_FOUND] });
+      return res.status(404).json({ errors: [ERROR_MESSAGES.NEWS_NOT_FOUND] });
     }
 
     // Check if breaking news already exists since only one is allowed to exist
     if (req.body.isBreakingNews) {
       const existingBreakingNews = await this.newsService.getBreakingNews();
       if (existingBreakingNews && existingBreakingNews.id !== existingNews.id)
-        return res.status(400).json({ errors: [BREAKING_NEWS_LIMIT] });
+        return res
+          .status(400)
+          .json({ errors: [ERROR_MESSAGES.BREAKING_NEWS_LIMIT] });
     }
 
     const news = await this.newsService.updateNews(
@@ -82,18 +87,20 @@ export class NewsController {
 
   deleteNews = async (req: RequestWithUserId, res: Response) => {
     if (!isValidMongoId(req.params.newsId))
-      return res.status(400).json({ errors: [INVALID_MONGO_ID] });
+      return res
+        .status(400)
+        .json({ errors: [ERROR_MESSAGES.INVALID_MONGO_ID] });
 
     const existingNews = await this.newsService.getNewsById(req.params.newsId);
     if (!existingNews) {
-      return res.status(404).json({ errors: [NEWS_NOT_FOUND] });
+      return res.status(404).json({ errors: [ERROR_MESSAGES.NEWS_NOT_FOUND] });
     }
 
     await this.newsService.deleteNews(req.params.newsId);
 
     await deleteLocalImage(existingNews.imageUrl);
 
-    return res.status(200).json({ message: DELETE_SUCCESS });
+    return res.status(200).json({ message: MESSAGES.DELETE_SUCCESS });
   };
 
   getFrontPage = async (req: Request, res: Response) => {
