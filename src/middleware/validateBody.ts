@@ -1,7 +1,7 @@
 import { ClassConstructor, plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
 import { Request, Response, NextFunction } from 'express';
-import { NO_VALUES_PROVIDED } from '../constants/error-messages';
+import * as ERROR_MESSAGES from '../constants/error-messages';
 
 export function validateBody<T extends object>(
   targetClass: ClassConstructor<T>,
@@ -16,7 +16,7 @@ export function validateBody<T extends object>(
     if (makeAllOptional && Object.keys(data).length === 0)
       // TODO: We don't need to compare length with 0
       return res.status(400).json({
-        errors: [NO_VALUES_PROVIDED],
+        errors: [ERROR_MESSAGES.NO_VALUES_PROVIDED],
       });
     if (validationErrors.length > 0) {
       return res.status(400).json({
