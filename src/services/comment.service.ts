@@ -1,6 +1,7 @@
 import { Model } from 'mongoose';
 import { CommentDto } from '../models/Comment';
 import { IComment } from '../interfaces/comment';
+import { CommentRelations } from '../enums/relations';
 
 export class CommentService {
   constructor(public readonly commentModel: Model<IComment>) {
@@ -10,7 +11,7 @@ export class CommentService {
   async getCommentById(id: string) {
     return await this.commentModel
       .findOne({ _id: id })
-      .populate(['commenter', 'news']);
+      .populate([CommentRelations.commenter, CommentRelations.news]);
   }
 
   async createComment(
