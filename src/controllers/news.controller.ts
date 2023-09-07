@@ -50,7 +50,6 @@ export class NewsController {
     const news = await this.newsService.createNews(
       {
         ...req.body,
-        isBreakingNews: false,
         imageUrl: `${process.env.BACKEND_URL}/public/${req.file.filename}`,
       },
       req.user!.fullName! // Full name is guaranteed due to middleware
