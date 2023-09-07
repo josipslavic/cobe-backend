@@ -7,7 +7,7 @@ import {
 } from 'class-validator';
 import mongoose, { Schema } from 'mongoose';
 import { newsCategories } from '../constants/newsCategories';
-import { Type } from 'class-transformer';
+import { Transform } from 'class-transformer';
 import 'reflect-metadata';
 import { INews } from '../interfaces/news';
 
@@ -27,7 +27,9 @@ export class NewsDto {
   @IsIn(newsCategories)
   category: string;
 
-  @Type(() => Boolean)
+  @Transform(({ value }) => {
+    return [true, 'true'].indexOf(value) > -1;
+  })
   @IsOptional()
   @IsBoolean()
   isBreakingNews: boolean;
