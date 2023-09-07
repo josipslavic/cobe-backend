@@ -1,7 +1,6 @@
 import { IsString, MinLength } from 'class-validator';
 import mongoose, { Schema } from 'mongoose';
 import { IComment } from '../interfaces/comment';
-import { CommentRelations } from '../enums/relations';
 
 export class CommentDto {
   @IsString()
@@ -15,7 +14,7 @@ const CommentSchema = new Schema<IComment>(
       type: String,
       required: true,
     },
-    [CommentRelations.commenter]: {
+    commenter: {
       type: mongoose.Types.ObjectId,
       ref: 'User',
       required: true,
@@ -24,7 +23,7 @@ const CommentSchema = new Schema<IComment>(
       type: Date,
       default: Date.now,
     },
-    [CommentRelations.news]: {
+    news: {
       type: mongoose.Types.ObjectId,
       ref: 'News',
       required: true,
