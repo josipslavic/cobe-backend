@@ -25,6 +25,7 @@ export function validateBody<T extends object>(
         ),
       });
     }
+    req.body = data;
     next();
   };
 }
