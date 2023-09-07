@@ -8,6 +8,10 @@ import 'dotenv/config';
 import * as ERROR_MESSAGES from '../constants/error-messages';
 import * as MESSAGES from '../constants/messages';
 import { newsPlaceholders } from '../constants/placeholders';
+import {
+  SHORTENED_ARTICLE_MAX_LENGTH,
+  SHORTENED_ARTICLE_MIN_LENGTH,
+} from '../constants/numbers';
 import { INewsAPIData } from '../interfaces/newsApiData';
 import { INews } from '../interfaces/news';
 import { RequestWithUserId } from '../interfaces/requestWithUserId';
@@ -126,8 +130,11 @@ export class NewsController {
         lastEditedBy: article.author,
         headline: article.title,
         shortDescription:
-          article.description.length > 20 // TODO: Set default values in one place so you can change them later easily
-            ? article.description.slice(0, 20) + '...'
+          article.description.length > SHORTENED_ARTICLE_MAX_LENGTH
+            ? article.description.slice(
+                SHORTENED_ARTICLE_MIN_LENGTH,
+                SHORTENED_ARTICLE_MAX_LENGTH
+              ) + '...'
             : article.description,
         fullDescription: article.description,
         createdAt: new Date(article.publishedAt),
