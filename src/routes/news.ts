@@ -6,7 +6,7 @@ import { NewsDto, NewsModel } from '../models/News';
 import { isAuth } from '../middleware/isAuth';
 import { upload } from '../utils/multerUpload';
 import { requireRoles } from '../middleware/requireRoles';
-import { userRoles } from '../enums/userRoles';
+import { UserRoles } from '../enums/UserRoles';
 
 export const newsRouter = Router();
 
@@ -22,7 +22,7 @@ newsRouter.post(
   upload.single('image'),
   validateBody(NewsDto),
   isAuth,
-  requireRoles([userRoles.ADMIN, userRoles.EDITOR]),
+  requireRoles([UserRoles.ADMIN, UserRoles.EDITOR]),
   newsController.createNews
 );
 
@@ -31,14 +31,14 @@ newsRouter.patch(
   upload.single('image'),
   validateBody(NewsDto, true),
   isAuth,
-  requireRoles([userRoles.ADMIN, userRoles.EDITOR]),
+  requireRoles([UserRoles.ADMIN, UserRoles.EDITOR]),
   newsController.updateNews
 );
 
 newsRouter.delete(
   '/:newsId',
   isAuth,
-  requireRoles([userRoles.ADMIN]),
+  requireRoles([UserRoles.ADMIN]),
   newsController.deleteNews
 );
 

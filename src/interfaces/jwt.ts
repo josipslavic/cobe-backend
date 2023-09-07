@@ -1,8 +1,8 @@
-import { userRoles } from '../enums/userRoles';
+import { UserRoles } from '../enums/UserRoles';
 
 export interface IJwt {
   id: string;
-  role: userRoles;
+  role: UserRoles;
   alias: string;
   fullName?: string;
 }

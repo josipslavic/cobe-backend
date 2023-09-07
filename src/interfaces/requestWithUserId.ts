@@ -1,10 +1,10 @@
 import { Request } from 'express';
-import { userRoles } from '../enums/userRoles';
+import { UserRoles } from '../enums/UserRoles';
 
 export interface RequestWithUserId extends Request {
   user?: {
     id: string;
-    role: userRoles;
+    role: UserRoles;
     alias: string;
     fullName?: string;
   };

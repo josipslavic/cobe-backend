@@ -7,7 +7,7 @@ import {
 } from 'class-validator';
 import mongoose, { Schema } from 'mongoose';
 import { IUser } from '../interfaces/user';
-import { userRoles } from '../enums/userRoles';
+import { UserRoles } from '../enums/UserRoles';
 
 export class UserDto {
   @IsEmail()
@@ -17,8 +17,8 @@ export class UserDto {
   @MinLength(1)
   password: string;
 
-  @IsIn(Object.values(userRoles))
-  role: userRoles;
+  @IsIn(Object.values(UserRoles))
+  role: UserRoles;
 
   @ValidateIf((o) => o.role !== 'guest')
   @IsString()
@@ -34,7 +34,7 @@ const UserSchema = new Schema<IUser>(
   {
     role: {
       type: String,
-      enum: userRoles,
+      enum: UserRoles,
     },
     email: {
       type: String,
