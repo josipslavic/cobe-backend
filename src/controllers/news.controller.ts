@@ -48,7 +48,11 @@ export class NewsController {
     }
 
     const news = await this.newsService.createNews(
-      { ...req.body, imageUrl: req.file.path },
+      {
+        ...req.body,
+        isBreakingNews: false,
+        imageUrl: `${process.env.BACKEND_URL}/public/${req.file.filename}`,
+      },
       req.user!.fullName! // Full name is guaranteed due to middleware
     );
 
@@ -76,7 +80,12 @@ export class NewsController {
     }
 
     const news = await this.newsService.updateNews(
-      req.file?.path ? { ...req.body, imageUrl: req.file.path } : req.body,
+      req.file?.path
+        ? {
+            ...req.body,
+            imageUrl: `${process.env.BACKEND_URL}/public/${req.file.filename}`,
+          }
+        : req.body,
       req.params.newsId,
       req.user!.fullName! // Full name is guaranteed due to middleware
     );
