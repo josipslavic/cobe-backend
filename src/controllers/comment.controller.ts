@@ -1,9 +1,9 @@
 import { CommentService } from '../services/comment.service';
 import { Request, Response } from 'express';
 import { isValidMongoId } from '../utils/isValidMongoId';
-import { RequestWithUserId } from '../middleware/isAuth';
 import { NewsService } from '../services/news.service';
 import * as ERROR_MESSAGES from '../constants/error-messages';
+import { RequestWithUserId } from '../interfaces/requestWithUserId';
 import { DELETE_SUCCESS } from '../constants/messages';
 
 export class CommentController {
@@ -41,7 +41,7 @@ export class CommentController {
 
     const comment = await this.commentService.createComment(
       req.body,
-      req.user!.fullName || req.user!.alias, // alias required in case user is a guest
+      req.user!.id,
       req.params.newsId as string
     );
 

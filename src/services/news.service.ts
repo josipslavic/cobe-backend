@@ -1,6 +1,7 @@
 import { Model } from 'mongoose';
-import { INews, NewsDto } from '../models/News';
+import { NewsDto } from '../models/News';
 import { newsCategories } from '../constants/newsCategories';
+import { INews } from '../interfaces/news';
 
 export class NewsService {
   constructor(public readonly newsModel: Model<INews>) {

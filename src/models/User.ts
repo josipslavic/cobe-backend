@@ -5,16 +5,9 @@ import {
   MinLength,
   ValidateIf,
 } from 'class-validator';
-import mongoose, { Document, Schema } from 'mongoose';
-
-export interface IUser extends Document {
-  email: string;
-  password: string;
-  role: 'admin' | 'editor' | 'guest';
-  fullName?: string;
-  alias: string;
-  registeredAt: Date;
-}
+import mongoose, { Schema } from 'mongoose';
+import { IUser } from '../interfaces/user';
+import { UserRoles } from '../enums/UserRoles';
 
 export class UserDto {
   @IsEmail()
@@ -24,8 +17,8 @@ export class UserDto {
   @MinLength(1)
   password: string;
 
-  @IsIn(['admin', 'editor', 'guest'])
-  role: 'admin' | 'editor' | 'guest'; // TODO: enum
+  @IsIn(Object.values(UserRoles))
+  role: UserRoles;
 
   @ValidateIf((o) => o.role !== 'guest')
   @IsString()
@@ -41,7 +34,7 @@ const UserSchema = new Schema<IUser>(
   {
     role: {
       type: String,
-      enum: ['admin', 'editor', 'guest'],
+      enum: UserRoles,
     },
     email: {
       type: String,

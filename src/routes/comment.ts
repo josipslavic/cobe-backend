@@ -7,6 +7,7 @@ import { requireRoles } from '../middleware/requireRoles';
 import { NewsService } from '../services/news.service';
 import { NewsModel } from '../models/News';
 import { CommentController } from '../controllers/comment.controller';
+import { UserRoles } from '../enums/UserRoles';
 
 export const commentRouter = Router();
 
@@ -26,6 +27,6 @@ commentRouter.post(
 commentRouter.delete(
   '/:commentId',
   isAuth,
-  requireRoles(['admin']),
+  requireRoles([UserRoles.ADMIN]),
   commentController.deleteComment
 );

@@ -1,12 +1,6 @@
 import { IsString, MinLength } from 'class-validator';
-import mongoose, { Document, Schema } from 'mongoose';
-
-export interface IComment extends Document { // TODO: extract interface
-  comment: string;
-  commenter: string;
-  news: mongoose.ObjectIdSchemaDefinition;
-  createdAt: Date;
-}
+import mongoose, { Schema } from 'mongoose';
+import { IComment } from '../interfaces/comment';
 
 export class CommentDto {
   @IsString()
@@ -21,7 +15,8 @@ const CommentSchema = new Schema<IComment>(
       required: true,
     },
     commenter: {
-      type: String,
+      type: mongoose.Types.ObjectId,
+      ref: 'User',
       required: true,
     },
     createdAt: {

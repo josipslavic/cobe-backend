@@ -5,24 +5,11 @@ import {
   IsString,
   MinLength,
 } from 'class-validator';
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import { newsCategories } from '../constants/newsCategories';
 import { Type } from 'class-transformer';
 import 'reflect-metadata';
-
-export interface INews extends Document {
-  createdBy: string;
-  lastEditedBy: string;
-  headline: string;
-  shortDescription: string;
-  fullDescription: string;
-  imageUrl: string;
-  category: string;
-  createdAt: Date;
-  lastEditedAt: Date;
-  isBreakingNews: boolean;
-  views: number;
-}
+import { INews } from '../interfaces/news';
 
 export class NewsDto {
   @IsString()

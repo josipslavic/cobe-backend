@@ -1,10 +1,8 @@
 import { NewsService } from '../services/news.service';
 import { Request, Response } from 'express';
 import { isValidMongoId } from '../utils/isValidMongoId';
-import { RequestWithUserId } from '../middleware/isAuth';
 import { deleteLocalImage } from '../utils/deleteLocalImage';
 import { newsCategories } from '../constants/newsCategories';
-import { INews } from '../models/News';
 import axios from 'axios';
 import 'dotenv/config';
 import * as ERROR_MESSAGES from '../constants/error-messages';
@@ -14,6 +12,9 @@ import {
   SHORTENED_ARTICLE_MAX_LENGTH,
   SHORTENED_ARTICLE_MIN_LENGTH,
 } from '../constants/numbers';
+import { INewsAPIData } from '../interfaces/newsApiData';
+import { INews } from '../interfaces/news';
+import { RequestWithUserId } from '../interfaces/requestWithUserId';
 
 export class NewsController {
   constructor(private newsService: NewsService) {}
@@ -111,26 +112,8 @@ export class NewsController {
 
   populateData = async (req: Request, res: Response) => {
     const { data } = (await axios.get(
-      `${process.env.NEWSAPI_BASE_URL}/everything?q=${req.params.query}&sortBy=publishedAt&apiKey=${process.env.NEWSAPI_KEY}` // TODO: Handle this through some config variables.
-    )) as {
-      // TODO: Is it possible to have this model extracted somehow in a separate file?
-      data: {
-        status: string;
-        articles: {
-          source: {
-            id: string | null;
-            name: string;
-          };
-          author: string;
-          title: string;
-          description: string;
-          url: string;
-          urlToImage: string;
-          publishedAt: string;
-          content: string;
-        }[];
-      };
-    };
+      `${process.env.NEWSAPI_BASE_URL}/everything?q=${req.params.query}&sortBy=publishedAt&apiKey=${process.env.NEWSAPI_KEY}`
+    )) as INewsAPIData;
 
     if (data.status !== 'ok')
       return res.status(500).json({ errors: ['newsapi failed to respond'] });
