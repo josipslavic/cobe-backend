@@ -31,11 +31,13 @@ Navigate to `http://localhost:3000`
 
 This project uses the following environment variables:
 
-| Name        | Description                     | Default Value                                                                           |
-| ----------- | ------------------------------- | --------------------------------------------------------------------------------------- |
-| JWT_KEY     | JWT secret                      | "jwtkey"                                                                                |
-| MONGO_URI   | Your Mongodb Atlas URI          | mongodb+srv://username:password@yourdatabase.mongodb.net/?retryWrites=true&w=majority   |
-| NEWSAPI_KEY | API key to https://newsapi.org/ | yournewsapikey                                                                          |
+| Name             | Description                     | Default Value                                                                           |
+| ---------------- | ------------------------------- | --------------------------------------------------------------------------------------- |
+| JWT_KEY          | JWT secret                      | "jwtkey"                                                                                |
+| JWT_EXPIRES_IN   | JWT time to expiry              | "2h"                                                                                    |
+| MONGO_URI        | Your Mongodb Atlas URI          | mongodb+srv://username:password@yourdatabase.mongodb.net/?retryWrites=true&w=majority   |
+| NEWSAPI_BASE_URL | Current base url to newsapi     | "https://newsapi.org/v2"                                                                |
+| NEWSAPI_KEY      | API key to https://newsapi.org/ | yournewsapikey                                                                          |
 
 ## Available npm scripts
 

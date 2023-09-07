@@ -5,24 +5,25 @@ import { deleteLocalImage } from '../utils/deleteLocalImage';
 import { newsCategories } from '../constants/newsCategories';
 import axios from 'axios';
 import 'dotenv/config';
-import {
-  BREAKING_NEWS_LIMIT,
-  INVALID_MONGO_ID,
-  NEWS_NOT_FOUND,
-} from '../constants/messages';
+import * as ERROR_MESSAGES from '../constants/error-messages';
+import * as MESSAGES from '../constants/messages';
+import { newsPlaceholders } from '../constants/placeholders';
 import { INewsAPIData } from '../interfaces/newsApiData';
-import { RequestWithUserId } from '../interfaces/requestWithUserId';
 import { INews } from '../interfaces/news';
+import { RequestWithUserId } from '../interfaces/requestWithUserId';
 
 export class NewsController {
   constructor(private newsService: NewsService) {}
 
   getNewsById = async (req: Request, res: Response) => {
     if (!isValidMongoId(req.params.newsId))
-      return res.status(400).json({ errors: [INVALID_MONGO_ID] });
+      return res
+        .status(400)
+        .json({ errors: [ERROR_MESSAGES.INVALID_MONGO_ID] });
 
     const news = await this.newsService.getNewsById(req.params.newsId);
-    if (!news) return res.status(404).json({ errors: [NEWS_NOT_FOUND] });
+    if (!news)
+      return res.status(404).json({ errors: [ERROR_MESSAGES.NEWS_NOT_FOUND] });
 
     await this.newsService.increaseViewsForNews([news]);
 
@@ -37,7 +38,9 @@ export class NewsController {
     if (req.body.isBreakingNews) {
       const existingBreakingNews = await this.newsService.getBreakingNews();
       if (existingBreakingNews)
-        return res.status(400).json({ errors: [BREAKING_NEWS_LIMIT] });
+        return res
+          .status(400)
+          .json({ errors: [ERROR_MESSAGES.BREAKING_NEWS_LIMIT] });
     }
 
     const news = await this.newsService.createNews(
@@ -50,18 +53,22 @@ export class NewsController {
 
   updateNews = async (req: RequestWithUserId, res: Response) => {
     if (!isValidMongoId(req.params.newsId))
-      return res.status(400).json({ errors: [INVALID_MONGO_ID] });
+      return res
+        .status(400)
+        .json({ errors: [ERROR_MESSAGES.INVALID_MONGO_ID] });
 
     const existingNews = await this.newsService.getNewsById(req.params.newsId);
     if (!existingNews) {
-      return res.status(404).json({ errors: [NEWS_NOT_FOUND] });
+      return res.status(404).json({ errors: [ERROR_MESSAGES.NEWS_NOT_FOUND] });
     }
 
     // Check if breaking news already exists since only one is allowed to exist
     if (req.body.isBreakingNews) {
       const existingBreakingNews = await this.newsService.getBreakingNews();
       if (existingBreakingNews && existingBreakingNews.id !== existingNews.id)
-        return res.status(400).json({ errors: [BREAKING_NEWS_LIMIT] });
+        return res
+          .status(400)
+          .json({ errors: [ERROR_MESSAGES.BREAKING_NEWS_LIMIT] });
     }
 
     const news = await this.newsService.updateNews(
@@ -77,18 +84,20 @@ export class NewsController {
 
   deleteNews = async (req: RequestWithUserId, res: Response) => {
     if (!isValidMongoId(req.params.newsId))
-      return res.status(400).json({ errors: [INVALID_MONGO_ID] });
+      return res
+        .status(400)
+        .json({ errors: [ERROR_MESSAGES.INVALID_MONGO_ID] });
 
     const existingNews = await this.newsService.getNewsById(req.params.newsId);
     if (!existingNews) {
-      return res.status(404).json({ errors: [NEWS_NOT_FOUND] });
+      return res.status(404).json({ errors: [ERROR_MESSAGES.NEWS_NOT_FOUND] });
     }
 
     await this.newsService.deleteNews(req.params.newsId);
 
     await deleteLocalImage(existingNews.imageUrl);
 
-    return res.status(200).json({ message: 'News deleted successfully' });
+    return res.status(200).json({ message: MESSAGES.DELETE_SUCCESS });
   };
 
   getFrontPage = async (req: Request, res: Response) => {
@@ -99,7 +108,7 @@ export class NewsController {
 
   populateData = async (req: Request, res: Response) => {
     const { data } = (await axios.get(
-      `https://newsapi.org/v2/everything?q=${req.params.query}&sortBy=publishedAt&apiKey=${process.env.NEWSAPI_KEY}` // TODO: Handle this through some config variables.
+      `${process.env.NEWSAPI_BASE_URL}/everything?q=${req.params.query}&sortBy=publishedAt&apiKey=${process.env.NEWSAPI_KEY}`
     )) as INewsAPIData;
 
     if (data.status !== 'ok')
@@ -107,11 +116,10 @@ export class NewsController {
 
     const newsToPopulate: Partial<INews>[] = data.articles.map((article) => {
       // Add placeholders because all of these vaules can be empty
-      if (!article.description) article.description = ' ';
-      if (!article.urlToImage)
-        article.urlToImage =
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/681px-Placeholder_view_vector.svg.png'; // TODO: We don't want to have external url-s for pictures.
-      if (!article.author) article.author = 'Unkown author'; // TODO: Set default values in one place so you can change them later easily
+      if (!article.description)
+        article.description = newsPlaceholders.description;
+      if (!article.urlToImage) article.urlToImage = newsPlaceholders.urlToImage;
+      if (!article.author) article.author = newsPlaceholders.author;
 
       return {
         createdBy: article.author,

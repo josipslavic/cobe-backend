@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { UserService } from '../services/user.service';
 import { compare } from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import * as ERROR_MESSAGES from '../constants/error-messages';
 
 export class UserController {
   constructor(private userService: UserService) {}
@@ -22,7 +23,7 @@ export class UserController {
       },
       process.env.JWT_KEY as string,
       {
-        expiresIn: '3000h', // large number for testing  // TODO: Set it in some config variable
+        expiresIn: process.env.JWT_EXPIRES_IN,
       }
     );
 
@@ -31,15 +32,13 @@ export class UserController {
 
   login = async (req: Request, res: Response) => {
     if (!req.body.email || !req.body.password)
-      return res
-        .status(400)
-        .json({ errors: ['please provide a username and password'] });
+      return res.status(400).json({ errors: [ERROR_MESSAGES.AUTH_FAILED] });
 
     const existingUser = await this.userService.findUserByEmail(req.body.email);
     if (!existingUser)
       return res
         .status(404)
-        .json({ errors: ["user with that email doesn't exist"] });
+        .json({ errors: [ERROR_MESSAGES.INVALID_CREDENTIALS] });
 
     const isPasswordMatching = await compare(
       req.body.password,
@@ -47,7 +46,9 @@ export class UserController {
     );
 
     if (!isPasswordMatching) {
-      return res.status(401).json({ errors: ['invalid password'] });
+      return res
+        .status(401)
+        .json({ errors: [ERROR_MESSAGES.INVALID_CREDENTIALS] });
     }
 
     const token = jwt.sign(
@@ -59,7 +60,7 @@ export class UserController {
       },
       process.env.JWT_KEY as string,
       {
-        expiresIn: '3000h', // large number for testing
+        expiresIn: process.env.JWT_EXPIRES_IN,
       }
     );
 

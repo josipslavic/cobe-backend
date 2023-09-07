@@ -13,6 +13,8 @@ export const newsRouter = Router();
 const newsService = new NewsService(NewsModel);
 const newsController = new NewsController(newsService);
 
+newsRouter.get('/front-page', newsController.getFrontPage);
+
 newsRouter.get('/:newsId', newsController.getNewsById);
 
 newsRouter.post(
@@ -39,7 +41,5 @@ newsRouter.delete(
   requireRoles([userRoles.ADMIN]),
   newsController.deleteNews
 );
-
-newsRouter.get('/front-page', newsController.getFrontPage);
 
 newsRouter.post('/populate/:query', newsController.populateData);

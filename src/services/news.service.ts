@@ -55,14 +55,17 @@ export class NewsService {
 
     // Get up to 4 news from each category
     for (const category of newsCategories) {
-      // TODO: What if some of the categories returns error?
-      const newsItems = await this.newsModel
-        .find({ category })
-        .limit(4)
-        .sort({ createdAt: -1 })
-        .select('-views');
+      try {
+        const newsItems = await this.newsModel
+          .find({ category })
+          .limit(4)
+          .sort({ createdAt: -1 })
+          .select('-views');
 
-      frontPageNews = [...frontPageNews, ...newsItems];
+        frontPageNews = [...frontPageNews, ...newsItems];
+      } catch (err) {
+        console.error(err);
+      }
     }
 
     await this.increaseViewsForNews(frontPageNews);

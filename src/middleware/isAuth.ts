@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { Response, NextFunction } from 'express';
 import 'dotenv/config';
+import * as ERROR_MESSAGES from '../constants/error-messages';
 import { RequestWithUserId } from '../interfaces/requestWithUserId';
 import { IJwt } from '../interfaces/jwt';
 
@@ -21,7 +22,7 @@ export const isAuth = (
     next();
   } catch (error) {
     return res.status(401).json({
-      errors: ['auth failed'],
+      errors: [ERROR_MESSAGES.AUTH_FAILED],
     });
   }
 };
