@@ -8,4 +8,8 @@ export function mongooseConfig() {
     // The app shloudn't be able to run without mongoose successfuly connecting
     process.exit(1);
   });
+
+  mongoose.connection.once('open', () => {
+    console.log('Mongoose connected successfully');
+  });
 }
