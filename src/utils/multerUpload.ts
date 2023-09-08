@@ -1,17 +1,4 @@
-import { existsSync, mkdir } from 'fs';
 import multer from 'multer';
-import path from 'path';
-
-const storage = multer.diskStorage({
-  destination: function (_req, _file, cb) {
-    if (!existsSync(path.join(__dirname, '../../public')))
-      mkdir(path.join(__dirname, '../../public'), () => {});
-    cb(null, path.join(__dirname, '../../public'));
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + file.originalname);
-  },
-});
 
 const fileFilter: multer.Options['fileFilter'] = (_req, file, cb) => {
   // reject a file
@@ -23,7 +10,7 @@ const fileFilter: multer.Options['fileFilter'] = (_req, file, cb) => {
 };
 
 export const upload = multer({
-  storage: storage,
+  storage: multer.memoryStorage(),
   limits: {
     fileSize: 1024 * 1024 * 5, // 5MB,
   },

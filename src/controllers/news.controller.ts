@@ -15,6 +15,7 @@ import {
 import { INewsAPIData } from '../interfaces/newsApiData';
 import { INews } from '../interfaces/news';
 import { RequestWithUserId } from '../interfaces/requestWithUserId';
+import { deletePublicFile, uploadPublicFile } from '../utils/image-upload';
 
 export class NewsController {
   constructor(private newsService: NewsService) {}
@@ -35,7 +36,7 @@ export class NewsController {
   };
 
   createNews = async (req: RequestWithUserId, res: Response) => {
-    if (!req.file?.path)
+    if (!req.file)
       return res.status(400).json({ errors: ['image must be provided'] });
 
     // Check if breaking news already exists since only one is allowed to exist
@@ -47,10 +48,15 @@ export class NewsController {
           .json({ errors: [ERROR_MESSAGES.BREAKING_NEWS_LIMIT] });
     }
 
+    const imageUrl = await uploadPublicFile(
+      req.file.buffer,
+      req.file.originalname
+    );
+
     const news = await this.newsService.createNews(
       {
         ...req.body,
-        imageUrl: `${process.env.BACKEND_URL}/public/${req.file.filename}`,
+        imageUrl,
       },
       req.user!.fullName! // Full name is guaranteed due to middleware
     );
@@ -82,14 +88,17 @@ export class NewsController {
       req.file?.path
         ? {
             ...req.body,
-            imageUrl: `${process.env.BACKEND_URL}/public/${req.file.filename}`,
+            imageUrl: await uploadPublicFile(
+              req.file.buffer,
+              req.file.originalname
+            ),
           }
         : req.body,
       req.params.newsId,
       req.user!.fullName! // Full name is guaranteed due to middleware
     );
 
-    req.file?.path && (await deleteLocalImage(existingNews.imageUrl));
+    req.file?.path && (await deletePublicFile(existingNews.imageUrl));
 
     return res.status(200).json(news);
   };
@@ -107,7 +116,7 @@ export class NewsController {
 
     await this.newsService.deleteNews(req.params.newsId);
 
-    await deleteLocalImage(existingNews.imageUrl);
+    await deletePublicFile(existingNews.imageUrl);
 
     return res.status(200).json({ message: MESSAGES.DELETE_SUCCESS });
   };
