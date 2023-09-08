@@ -1,5 +1,6 @@
 export const newsPlaceholders = {
   description: ' ',
-  urlToImage: `${process.env.BACKEND_URL}/public/no-image.png`,
+  urlToImage:
+    'https://cobe-backend.s3.eu-central-1.amazonaws.com/no-image-available.png',
   author: 'Unkown author',
 };
