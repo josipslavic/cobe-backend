@@ -7,6 +7,7 @@ export interface INews extends Document {
   shortDescription: string;
   fullDescription: string;
   imageUrl: string;
+  imageId: string | null;
   category: string;
   createdAt: Date;
   lastEditedAt: Date;

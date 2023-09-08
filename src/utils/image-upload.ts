@@ -1,26 +1,15 @@
-import { s3 } from '../constants/s3';
+import cloudinary from 'cloudinary';
 
-export async function uploadPublicFile(dataBuffer: Buffer, filename: string) {
-  const uploadResult = await s3
-    .upload({
-      Bucket: process.env.AWS_PUBLIC_BUCKET_NAME!,
-      Body: dataBuffer,
-      ACL: 'public-read',
-      Key: `${Date.now()}-${filename}`.replace(/\//g, ''),
-    })
-    .promise();
-
-  return uploadResult.Location;
+export async function uploadPublicFile(file: Express.Multer.File) {
+  const b64 = Buffer.from(file.buffer).toString('base64');
+  let dataURI = 'data:' + file.mimetype + ';base64,' + b64;
+  const { secure_url: imageUrl, public_id: imageId } =
+    await cloudinary.v2.uploader.upload(dataURI, {
+      resource_type: 'auto',
+    });
+  return { imageUrl, imageId };
 }
 
-export async function deletePublicFile(imageUrl: string) {
-  const filename = imageUrl.split('/').pop()!;
-  const deleteResult = await s3
-    .deleteObject({
-      Bucket: process.env.AWS_PUBLIC_BUCKET_NAME!,
-      Key: filename,
-    })
-    .promise();
-
-  return deleteResult.$response;
+export async function deletePublicFile(imageId: string) {
+  await cloudinary.v2.uploader.destroy(imageId);
 }
