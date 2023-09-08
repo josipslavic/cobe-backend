@@ -4,9 +4,9 @@ import path from 'path';
 
 const storage = multer.diskStorage({
   destination: function (_req, _file, cb) {
-    if (!existsSync(path.join(__dirname, '../public')))
-      mkdir(path.join(__dirname, '../public'), () => {});
-    cb(null, path.join(__dirname, '../public'));
+    if (!existsSync(path.join(__dirname, '../../public')))
+      mkdir(path.join(__dirname, '../../public'), () => {});
+    cb(null, path.join(__dirname, '../../public'));
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + file.originalname);
