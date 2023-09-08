@@ -31,18 +31,17 @@ Navigate to `http://localhost:3000`
 
 This project uses the following environment variables:
 
-| Name                   | Description                     | Default Value                                                                           |
-| ---------------------- | ------------------------------- | --------------------------------------------------------------------------------------- |
-| BACKEND_URL            | URL to the backend's index page | http://localhost:3000                                                                   |
-| JWT_KEY                | JWT secret                      | "jwtkey"                                                                                |
-| JWT_EXPIRES_IN         | JWT time to expiry              | "2h"                                                                                    |
-| MONGO_URI              | Your Mongodb Atlas URI          | mongodb+srv://username:password@yourdatabase.mongodb.net/?retryWrites=true&w=majority   |
-| NEWSAPI_BASE_URL       | Current base url to newsapi     | "https://newsapi.org/v2"                                                                |
-| NEWSAPI_KEY            | API key to https://newsapi.org/ | yournewsapikey                                                                          |
-| AWS_REGION             | AWS bucket's region             | eu-central-1                                                                            |
-| AWS_ACCESS_KEY_ID      | AWS access key id               | accesskeyid                                                                             |
-| AWS_SECRET_ACCESS_KEY  | AWS secret access eky           | secretaccesskey                                                                         |
-| AWS_PUBLIC_BUCKET_NAME | Name of AWS bucket              | cobe-backend                                                                            |
+| Name             | Description                     | Default Value                                                                           |
+| ---------------- | ------------------------------- | --------------------------------------------------------------------------------------- |
+| BACKEND_URL      | URL to the backend's index page | http://localhost:3000                                                                   |
+| JWT_KEY          | JWT secret                      | "jwtkey"                                                                                |
+| JWT_EXPIRES_IN   | JWT time to expiry              | "2h"                                                                                    |
+| MONGO_URI        | Your Mongodb Atlas URI          | mongodb+srv://username:password@yourdatabase.mongodb.net/?retryWrites=true&w=majority   |
+| NEWSAPI_BASE_URL | Current base url to newsapi     | "https://newsapi.org/v2"                                                                |
+| NEWSAPI_KEY      | API key to https://newsapi.org/ | yournewsapikey                                                                          |
+| CLOUD_NAME       | Cloudinary cloud name           | cloudname                                                                               |
+| API_KEY          | Cloudinary API key              | apikey                                                                                  |
+| API_SECRET       | Cloudinary API secret           | apisecret                                                                               |
 
 ## Available npm scripts
 

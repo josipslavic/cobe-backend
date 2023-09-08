@@ -1,7 +1,6 @@
 import { NewsService } from '../services/news.service';
 import { Request, Response } from 'express';
 import { isValidMongoId } from '../utils/isValidMongoId';
-import { deleteLocalImage } from '../utils/deleteLocalImage';
 import { newsCategories } from '../constants/newsCategories';
 import axios from 'axios';
 import 'dotenv/config';
@@ -48,15 +47,13 @@ export class NewsController {
           .json({ errors: [ERROR_MESSAGES.BREAKING_NEWS_LIMIT] });
     }
 
-    const imageUrl = await uploadPublicFile(
-      req.file.buffer,
-      req.file.originalname
-    );
+    const { imageUrl, imageId } = await uploadPublicFile(req.file);
 
     const news = await this.newsService.createNews(
       {
         ...req.body,
         imageUrl,
+        imageId,
       },
       req.user!.fullName! // Full name is guaranteed due to middleware
     );
@@ -88,17 +85,15 @@ export class NewsController {
       req.file?.path
         ? {
             ...req.body,
-            imageUrl: await uploadPublicFile(
-              req.file.buffer,
-              req.file.originalname
-            ),
+            ...(await uploadPublicFile(req.file)),
           }
         : req.body,
       req.params.newsId,
       req.user!.fullName! // Full name is guaranteed due to middleware
     );
 
-    req.file?.path && (await deletePublicFile(existingNews.imageUrl));
+    if (req.file && existingNews.imageId)
+      await deletePublicFile(existingNews.imageId);
 
     return res.status(200).json(news);
   };
@@ -116,7 +111,7 @@ export class NewsController {
 
     await this.newsService.deleteNews(req.params.newsId);
 
-    await deletePublicFile(existingNews.imageUrl);
+    if (existingNews.imageId) await deletePublicFile(existingNews.imageId);
 
     return res.status(200).json({ message: MESSAGES.DELETE_SUCCESS });
   };
