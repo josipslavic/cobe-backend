@@ -15,7 +15,7 @@ mongoose.connect(process.env.MONGO_URI as string);
 
 app.use(bodyParser.json());
 
-app.use('/public', express.static(path.join(__dirname, 'public')));
+app.use('/public', express.static(path.join(__dirname, '..', 'public')));
 
 app.use('/uploads', express.static('uploads'));
 
