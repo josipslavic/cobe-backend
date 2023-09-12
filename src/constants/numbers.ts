@@ -1,3 +1,5 @@
 export const SHORTENED_ARTICLE_MIN_LENGTH = 0;
 
 export const SHORTENED_ARTICLE_MAX_LENGTH = 20;
+
+export const HASH_SALTS = 10;
