@@ -1,69 +1,73 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { UserService } from '../services/user.service';
 import { compare } from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import * as ERROR_MESSAGES from '../constants/error-messages';
+import { commonErrors } from '../constants/commonErrors';
+import { statusCodes } from '../constants/statusCodes';
 
 export class UserController {
   constructor(private userService: UserService) {}
 
-  register = async (req: Request, res: Response) => {
-    const existingUser = await this.userService.findUserByEmail(req.body.email);
-    if (existingUser)
-      return res.status(409).json({ errors: ['email is already taken'] });
+  register = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const existingUser = await this.userService.findUserByEmail(
+        req.body.email
+      );
+      if (existingUser) throw commonErrors.emailTaken;
 
-    const user = await this.userService.createUser(req.body);
+      const user = await this.userService.createUser(req.body);
 
-    const token = jwt.sign(
-      {
-        id: user.id,
-        role: user.role,
-        fullName: user.fullName,
-        alias: user.alias,
-      },
-      process.env.JWT_KEY as string,
-      {
-        expiresIn: process.env.JWT_EXPIRES_IN,
-      }
-    );
+      const token = jwt.sign(
+        {
+          id: user.id,
+          role: user.role,
+          fullName: user.fullName,
+          alias: user.alias,
+        },
+        process.env.JWT_KEY as string,
+        {
+          expiresIn: process.env.JWT_EXPIRES_IN,
+        }
+      );
 
-    return res.status(201).json({ user, token });
+      return res.status(statusCodes.created).json({ user, token });
+    } catch (error) {
+      next(error);
+    }
   };
 
-  login = async (req: Request, res: Response) => {
-    if (!req.body.email || !req.body.password)
-      return res.status(400).json({ errors: [ERROR_MESSAGES.AUTH_FAILED] });
+  login = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      if (!req.body.email || !req.body.password) throw commonErrors.authFailed;
 
-    const existingUser = await this.userService.findUserByEmail(req.body.email);
-    if (!existingUser)
-      return res
-        .status(404)
-        .json({ errors: [ERROR_MESSAGES.INVALID_CREDENTIALS] });
+      const existingUser = await this.userService.findUserByEmail(
+        req.body.email
+      );
+      if (!existingUser) throw commonErrors.invalidCredentials;
 
-    const isPasswordMatching = await compare(
-      req.body.password,
-      existingUser.password
-    );
+      const isPasswordMatching = await compare(
+        req.body.password,
+        existingUser.password
+      );
 
-    if (!isPasswordMatching) {
-      return res
-        .status(401)
-        .json({ errors: [ERROR_MESSAGES.INVALID_CREDENTIALS] });
+      if (!isPasswordMatching) throw commonErrors.invalidCredentials;
+
+      const token = jwt.sign(
+        {
+          id: existingUser.id,
+          role: existingUser.role,
+          fullName: existingUser.fullName,
+          alias: existingUser.alias,
+        },
+        process.env.JWT_KEY as string,
+        {
+          expiresIn: process.env.JWT_EXPIRES_IN,
+        }
+      );
+
+      return res.status(statusCodes.ok).json({ user: existingUser, token });
+    } catch (error) {
+      next(error);
     }
-
-    const token = jwt.sign(
-      {
-        id: existingUser.id,
-        role: existingUser.role,
-        fullName: existingUser.fullName,
-        alias: existingUser.alias,
-      },
-      process.env.JWT_KEY as string,
-      {
-        expiresIn: process.env.JWT_EXPIRES_IN,
-      }
-    );
-
-    return res.status(200).json({ user: existingUser, token });
   };
 }

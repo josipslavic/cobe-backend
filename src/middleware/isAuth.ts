@@ -1,9 +1,9 @@
-import jwt from 'jsonwebtoken';
+import jwt, { JsonWebTokenError } from 'jsonwebtoken';
 import { Response, NextFunction } from 'express';
 import 'dotenv/config';
-import * as ERROR_MESSAGES from '../constants/error-messages';
 import { RequestWithUserId } from '../interfaces/requestWithUserId';
 import { IJwt } from '../interfaces/jwt';
+import { commonErrors } from '../constants/commonErrors';
 
 export const isAuth = (
   req: RequestWithUserId,
@@ -21,8 +21,7 @@ export const isAuth = (
     };
     next();
   } catch (error) {
-    return res.status(401).json({
-      errors: [ERROR_MESSAGES.AUTH_FAILED],
-    });
+    if (error instanceof JsonWebTokenError) error = commonErrors.authFailed;
+    next(error);
   }
 };
