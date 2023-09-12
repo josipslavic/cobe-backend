@@ -33,7 +33,6 @@ This project uses the following environment variables:
 
 | Name             | Description                     | Default Value                                                                           |
 | ---------------- | ------------------------------- | --------------------------------------------------------------------------------------- |
-| BACKEND_URL      | URL to the backend's index page | http://localhost:3000                                                                   |
 | JWT_KEY          | JWT secret                      | "jwtkey"                                                                                |
 | JWT_EXPIRES_IN   | JWT time to expiry              | "2h"                                                                                    |
 | MONGO_URI        | Your Mongodb Atlas URI          | mongodb+srv://username:password@yourdatabase.mongodb.net/?retryWrites=true&w=majority   |
