@@ -19,7 +19,9 @@ export function validateBody<T extends object>(
         throw commonErrors.noValuesProvided;
       if (validationErrors.length > 0) {
         return res.status(statusCodes.badRequest).json({
-          errors: validationErrors.flatMap((error) =>
+          success: false,
+          statusCode: statusCodes.badRequest,
+          message: validationErrors.flatMap((error) =>
             Object.values(error.constraints as { [key: string]: string })
           ),
         });
