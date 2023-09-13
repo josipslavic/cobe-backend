@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 import { UserService } from '../services/user.service';
-import { compare } from 'bcrypt';
-import jwt from 'jsonwebtoken';
 import { commonErrors } from '../constants/commonErrors';
 import { statusCodes } from '../constants/statusCodes';
+import { signJWT } from '../utils/signJwt';
+import { comparePassword } from '../utils/comparePassword';
 
 export class UserController {
   constructor(private userService: UserService) {}
@@ -17,18 +17,7 @@ export class UserController {
 
       const user = await this.userService.createUser(req.body);
 
-      const token = jwt.sign(
-        {
-          id: user.id,
-          role: user.role,
-          fullName: user.fullName,
-          alias: user.alias,
-        },
-        process.env.JWT_KEY as string,
-        {
-          expiresIn: process.env.JWT_EXPIRES_IN,
-        }
-      );
+      const token = signJWT(user);
 
       return res.status(statusCodes.created).json({ user, token });
     } catch (error) {
@@ -45,25 +34,14 @@ export class UserController {
       );
       if (!existingUser) throw commonErrors.invalidCredentials;
 
-      const isPasswordMatching = await compare(
+      const isPasswordMatching = await comparePassword(
         req.body.password,
         existingUser.password
       );
 
       if (!isPasswordMatching) throw commonErrors.invalidCredentials;
 
-      const token = jwt.sign(
-        {
-          id: existingUser.id,
-          role: existingUser.role,
-          fullName: existingUser.fullName,
-          alias: existingUser.alias,
-        },
-        process.env.JWT_KEY as string,
-        {
-          expiresIn: process.env.JWT_EXPIRES_IN,
-        }
-      );
+      const token = signJWT(existingUser);
 
       return res.status(statusCodes.ok).json({ user: existingUser, token });
     } catch (error) {
