@@ -3,9 +3,9 @@ import { NextFunction, Request, Response } from 'express';
 import { isValidMongoId } from '../utils/isValidMongoId';
 import { NewsService } from '../services/news.service';
 import { RequestWithUserId } from '../interfaces/requestWithUserId';
-import { DELETE_SUCCESS } from '../constants/messages';
 import { commonErrors } from '../constants/commonErrors';
 import { statusCodes } from '../constants/statusCodes';
+import { successResponses } from '../constants/successRespones';
 
 export class CommentController {
   constructor(
@@ -68,7 +68,7 @@ export class CommentController {
 
       await this.commentService.deleteComment(req.params.commentId);
 
-      return res.status(statusCodes.ok).json({ message: DELETE_SUCCESS });
+      return successResponses.deleteSuccess(res);
     } catch (error) {
       next(error);
     }

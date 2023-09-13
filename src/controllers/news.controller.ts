@@ -4,7 +4,6 @@ import { isValidMongoId } from '../utils/isValidMongoId';
 import { newsCategories } from '../constants/newsCategories';
 import axios from 'axios';
 import 'dotenv/config';
-import * as MESSAGES from '../constants/messages';
 import { newsPlaceholders } from '../constants/placeholders';
 import { INewsAPIData } from '../interfaces/newsApiData';
 import { INews } from '../interfaces/news';
@@ -13,6 +12,7 @@ import { deletePublicFile, uploadPublicFile } from '../utils/image-upload';
 import { trimDescription } from '../utils/trimDescription';
 import { commonErrors } from '../constants/commonErrors';
 import { statusCodes } from '../constants/statusCodes';
+import { successResponses } from '../constants/successRespones';
 
 export class NewsController {
   constructor(private newsService: NewsService) {}
@@ -124,9 +124,7 @@ export class NewsController {
 
       if (existingNews.imageId) await deletePublicFile(existingNews.imageId);
 
-      return res
-        .status(statusCodes.ok)
-        .json({ message: MESSAGES.DELETE_SUCCESS });
+      return successResponses.deleteSuccess(res);
     } catch (error) {
       next(error);
     }
