@@ -7,7 +7,6 @@ export function errorHandler(
   res: Response,
   next: NextFunction
 ) {
-  console.log('Middleware Error Hadnling');
   const status = err.statusCode || 500;
   const message = err.message || 'Something went wrong';
   res.status(status).json({
