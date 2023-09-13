@@ -4,8 +4,8 @@ import { isValidMongoId } from '../utils/isValidMongoId';
 import { NewsService } from '../services/news.service';
 import { RequestWithUserId } from '../interfaces/requestWithUserId';
 import { commonErrors } from '../constants/commonErrors';
-import { statusCodes } from '../constants/statusCodes';
 import { successResponses } from '../constants/successRespones';
+import * as MESSAGES from '../constants/messages';
 
 export class CommentController {
   constructor(
@@ -23,7 +23,7 @@ export class CommentController {
       );
       if (!comment) throw commonErrors.commentNotFound;
 
-      return res.status(statusCodes.ok).json(comment);
+      return successResponses.ok(res, comment);
     } catch (error) {
       next(error);
     }
@@ -46,7 +46,7 @@ export class CommentController {
         req.params.newsId as string
       );
 
-      return res.status(statusCodes.created).json(comment);
+      return successResponses.created(res, comment);
     } catch (error) {
       next(error);
     }
@@ -68,7 +68,7 @@ export class CommentController {
 
       await this.commentService.deleteComment(req.params.commentId);
 
-      return successResponses.deleteSuccess(res);
+      return successResponses.ok(res, MESSAGES.DELETE_SUCCESS);
     } catch (error) {
       next(error);
     }

@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 import { UserService } from '../services/user.service';
 import { commonErrors } from '../constants/commonErrors';
-import { statusCodes } from '../constants/statusCodes';
 import { signJWT } from '../utils/signJwt';
 import { comparePassword } from '../utils/comparePassword';
+import { successResponses } from '../constants/successRespones';
 
 export class UserController {
   constructor(private userService: UserService) {}
@@ -19,7 +19,7 @@ export class UserController {
 
       const token = signJWT(user);
 
-      return res.status(statusCodes.created).json({ user, token });
+      return successResponses.created(res, { user: existingUser, token });
     } catch (error) {
       next(error);
     }
@@ -43,7 +43,7 @@ export class UserController {
 
       const token = signJWT(existingUser);
 
-      return res.status(statusCodes.ok).json({ user: existingUser, token });
+      return successResponses.ok(res, { user: existingUser, token });
     } catch (error) {
       next(error);
     }
