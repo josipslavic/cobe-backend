@@ -11,8 +11,8 @@ import { RequestWithUserId } from '../interfaces/requestWithUserId';
 import { deletePublicFile, uploadPublicFile } from '../utils/image-upload';
 import { trimDescription } from '../utils/trimDescription';
 import { commonErrors } from '../constants/commonErrors';
-import { statusCodes } from '../constants/statusCodes';
 import { successResponses } from '../constants/successRespones';
+import * as MESSAGES from '../constants/messages';
 
 export class NewsController {
   constructor(private newsService: NewsService) {}
@@ -26,7 +26,7 @@ export class NewsController {
 
       await this.newsService.increaseViewsForNews([news]);
 
-      return res.status(statusCodes.ok).json(news);
+      return successResponses.ok(res, news);
     } catch (error) {
       next(error);
     }
@@ -57,7 +57,7 @@ export class NewsController {
         req.user!.fullName! // Full name is guaranteed due to middleware
       );
 
-      return res.status(statusCodes.created).json(news);
+      return successResponses.created(res, news);
     } catch (error) {
       next(error);
     }
@@ -99,7 +99,7 @@ export class NewsController {
       if (req.file && existingNews.imageId)
         await deletePublicFile(existingNews.imageId);
 
-      return res.status(statusCodes.ok).json(news);
+      return successResponses.ok(res, news);
     } catch (error) {
       next(error);
     }
@@ -124,7 +124,7 @@ export class NewsController {
 
       if (existingNews.imageId) await deletePublicFile(existingNews.imageId);
 
-      return successResponses.deleteSuccess(res);
+      return successResponses.ok(res, MESSAGES.DELETE_SUCCESS);
     } catch (error) {
       next(error);
     }
@@ -134,7 +134,7 @@ export class NewsController {
     try {
       const news = await this.newsService.getFrontPageNews();
 
-      return res.status(statusCodes.ok).json(news);
+      return successResponses.ok(res, news);
     } catch (error) {
       next(error);
     }
@@ -172,7 +172,7 @@ export class NewsController {
 
       const populatedNews = await this.newsService.populateNews(newsToPopulate);
 
-      return res.status(statusCodes.created).json({ populatedNews });
+      return successResponses.created(res, populatedNews);
     } catch (error) {
       next(error);
     }
