@@ -1,5 +1,6 @@
-import { IUser } from '../interfaces/user';
-import jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken'
+
+import { IUser } from '../interfaces/user'
 
 export function signJWT(user: IUser) {
   return jwt.sign(
@@ -13,5 +14,5 @@ export function signJWT(user: IUser) {
     {
       expiresIn: process.env.JWT_EXPIRES_IN,
     }
-  );
+  )
 }

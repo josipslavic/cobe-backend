@@ -1,13 +1,14 @@
-import { Router } from 'express';
-import { validateBody } from '../middleware/validateBody';
-import { UserDto, UserModel } from '../models/User';
-import { UserService } from '../services/user.service';
-import { UserController } from '../controllers/user.controller';
+import { Router } from 'express'
 
-export const userRouter = Router();
+import { UserController } from '../controllers/user.controller'
+import { validateBody } from '../middleware/validateBody'
+import { UserDto, UserModel } from '../models/User'
+import { UserService } from '../services/user.service'
 
-const userController = new UserController(new UserService(UserModel));
+export const userRouter = Router()
 
-userRouter.post('/register', validateBody(UserDto), userController.register);
+const userController = new UserController(new UserService(UserModel))
 
-userRouter.post('/login', userController.login);
+userRouter.post('/register', validateBody(UserDto), userController.register)
+
+userRouter.post('/login', userController.login)

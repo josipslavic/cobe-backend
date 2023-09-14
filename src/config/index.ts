@@ -1,7 +1,7 @@
-import { cloudinaryConfig } from './cloudinary';
-import { mongooseConfig } from './mognoose';
+import { cloudinaryConfig } from './cloudinary'
+import { mongooseConfig } from './mognoose'
 
 export function createConfigs() {
-  mongooseConfig();
-  cloudinaryConfig();
+  mongooseConfig()
+  cloudinaryConfig()
 }

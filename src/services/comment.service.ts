@@ -1,16 +1,17 @@
-import { Model } from 'mongoose';
-import { CommentDto } from '../models/Comment';
-import { IComment } from '../interfaces/comment';
+import { Model } from 'mongoose'
+
+import { IComment } from '../interfaces/comment'
+import { CommentDto } from '../models/Comment'
 
 export class CommentService {
   constructor(public readonly commentModel: Model<IComment>) {
-    this.commentModel = commentModel;
+    this.commentModel = commentModel
   }
 
   async getCommentById(id: string) {
     return await this.commentModel
       .findOne({ _id: id })
-      .populate(['commenter', 'news']);
+      .populate(['commenter', 'news'])
   }
 
   async createComment(
@@ -22,11 +23,11 @@ export class CommentService {
       ...createCommentDto,
       commenter: commetnerId,
       news: newsId,
-    });
-    return await comment.save();
+    })
+    return await comment.save()
   }
 
   async deleteComment(commentId: string) {
-    return await this.commentModel.findOneAndRemove({ _id: commentId }).exec();
+    return await this.commentModel.findOneAndRemove({ _id: commentId }).exec()
   }
 }

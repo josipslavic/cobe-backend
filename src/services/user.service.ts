@@ -1,21 +1,21 @@
-import { Model } from 'mongoose';
-import { UserDto } from '../models/User';
-import { hash } from 'bcrypt';
-import { IUser } from '../interfaces/user';
-import { hashPassword } from '../utils/hashPassword';
+import { Model } from 'mongoose'
+
+import { IUser } from '../interfaces/user'
+import { UserDto } from '../models/User'
+import { hashPassword } from '../utils/hashPassword'
 
 export class UserService {
   constructor(public readonly userModel: Model<IUser>) {
-    this.userModel = userModel;
+    this.userModel = userModel
   }
 
   async findUserByEmail(email: string) {
-    return await this.userModel.findOne({ email });
+    return await this.userModel.findOne({ email })
   }
 
   async createUser(createUserDto: UserDto) {
-    createUserDto.password = await hashPassword(createUserDto.password);
-    const user = await this.userModel.create({ ...createUserDto });
-    return await user.save();
+    createUserDto.password = await hashPassword(createUserDto.password)
+    const user = await this.userModel.create({ ...createUserDto })
+    return await user.save()
   }
 }
