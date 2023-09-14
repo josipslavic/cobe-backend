@@ -1,33 +1,28 @@
-import {
-  IsEmail,
-  IsIn,
-  IsString,
-  MinLength,
-  ValidateIf,
-} from 'class-validator';
-import mongoose, { Schema } from 'mongoose';
-import { IUser } from '../interfaces/user';
-import { UserRoles } from '../enums/UserRoles';
+import { IsEmail, IsIn, IsString, MinLength, ValidateIf } from 'class-validator'
+import mongoose, { Schema } from 'mongoose'
+
+import { UserRoles } from '../enums/UserRoles'
+import { IUser } from '../interfaces/user'
 
 export class UserDto {
   @IsEmail()
-  email: string;
+  email: string
 
   @IsString()
   @MinLength(1)
-  password: string;
+  password: string
 
   @IsIn(Object.values(UserRoles))
-  role: UserRoles;
+  role: UserRoles
 
   @ValidateIf((o) => o.role !== 'guest')
   @IsString()
   @MinLength(1)
-  fullName?: string;
+  fullName?: string
 
   @IsString()
   @MinLength(1)
-  alias: string;
+  alias: string
 }
 
 const UserSchema = new Schema<IUser>(
@@ -60,6 +55,6 @@ const UserSchema = new Schema<IUser>(
   {
     timestamps: false,
   }
-);
+)
 
-export const UserModel = mongoose.model<IUser>('User', UserSchema);
+export const UserModel = mongoose.model<IUser>('User', UserSchema)

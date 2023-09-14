@@ -1,11 +1,12 @@
-import { IsString, MinLength } from 'class-validator';
-import mongoose, { Schema } from 'mongoose';
-import { IComment } from '../interfaces/comment';
+import { IsString, MinLength } from 'class-validator'
+import mongoose, { Schema } from 'mongoose'
+
+import { IComment } from '../interfaces/comment'
 
 export class CommentDto {
   @IsString()
   @MinLength(1)
-  comment: string;
+  comment: string
 }
 
 const CommentSchema = new Schema<IComment>(
@@ -32,6 +33,6 @@ const CommentSchema = new Schema<IComment>(
   {
     timestamps: false,
   }
-);
+)
 
-export const CommentModel = mongoose.model<IComment>('Comments', CommentSchema);
+export const CommentModel = mongoose.model<IComment>('Comments', CommentSchema)

@@ -1,38 +1,39 @@
+import { Transform } from 'class-transformer'
 import {
   IsBoolean,
   IsIn,
   IsOptional,
   IsString,
   MinLength,
-} from 'class-validator';
-import mongoose, { Schema } from 'mongoose';
-import { newsCategories } from '../constants/newsCategories';
-import { Transform } from 'class-transformer';
-import 'reflect-metadata';
-import { INews } from '../interfaces/news';
+} from 'class-validator'
+import mongoose, { Schema } from 'mongoose'
+import 'reflect-metadata'
+
+import { newsCategories } from '../constants/newsCategories'
+import { INews } from '../interfaces/news'
 
 export class NewsDto {
   @IsString()
   @MinLength(1)
-  headline: string;
+  headline: string
 
   @IsString()
   @MinLength(1)
-  shortDescription: string;
+  shortDescription: string
 
   @IsString()
   @MinLength(1)
-  fullDescription: string;
+  fullDescription: string
 
   @IsIn(newsCategories)
-  category: string;
+  category: string
 
   @Transform(({ value }) => {
-    return [true, 'true'].indexOf(value) > -1;
+    return [true, 'true'].indexOf(value) > -1
   })
   @IsOptional()
   @IsBoolean()
-  isBreakingNews: boolean;
+  isBreakingNews: boolean
 }
 
 const NewsSchema = new Schema<INews>(
@@ -91,6 +92,6 @@ const NewsSchema = new Schema<INews>(
   {
     timestamps: false,
   }
-);
+)
 
-export const NewsModel = mongoose.model<INews>('News', NewsSchema);
+export const NewsModel = mongoose.model<INews>('News', NewsSchema)

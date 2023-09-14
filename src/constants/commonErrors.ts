@@ -1,6 +1,7 @@
-import { CustomError } from '../classes/CustomError';
-import * as ERROR_MESSAGES from '../constants/error-messages';
-import { statusCodes } from './statusCodes';
+import { CustomError } from '../classes/CustomError'
+import * as ERROR_MESSAGES from '../constants/error-messages'
+
+import { statusCodes } from './statusCodes'
 
 export const commonErrors = {
   emailTaken: new CustomError(ERROR_MESSAGES.EMAIL_TAKEN, statusCodes.conflict),
@@ -38,4 +39,4 @@ export const commonErrors = {
   ),
   newsApi: new CustomError(ERROR_MESSAGES.NEWS_API_ERROR, statusCodes.internal),
   noImage: new CustomError(ERROR_MESSAGES.NO_IMAGE, statusCodes.badRequest),
-};
+}

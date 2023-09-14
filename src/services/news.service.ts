@@ -1,19 +1,20 @@
-import { Model } from 'mongoose';
-import { NewsDto } from '../models/News';
-import { newsCategories } from '../constants/newsCategories';
-import { INews } from '../interfaces/news';
+import { Model } from 'mongoose'
+
+import { newsCategories } from '../constants/newsCategories'
+import { INews } from '../interfaces/news'
+import { NewsDto } from '../models/News'
 
 export class NewsService {
   constructor(public readonly newsModel: Model<INews>) {
-    this.newsModel = newsModel;
+    this.newsModel = newsModel
   }
 
   async getNewsById(newsId: string) {
-    return await this.newsModel.findOne({ _id: newsId });
+    return await this.newsModel.findOne({ _id: newsId })
   }
 
   async getBreakingNews() {
-    return await this.newsModel.findOne({ isBreakingNews: true });
+    return await this.newsModel.findOne({ isBreakingNews: true })
   }
 
   async createNews(createNewsDto: NewsDto, creatorName: string) {
@@ -21,13 +22,13 @@ export class NewsService {
       ...createNewsDto,
       createdBy: creatorName,
       lastEditedBy: creatorName,
-    });
-    return await news.save();
+    })
+    return await news.save()
   }
 
   async populateNews(newsArray: Partial<INews>[]) {
-    const createdNews = await this.newsModel.create(newsArray);
-    return createdNews;
+    const createdNews = await this.newsModel.create(newsArray)
+    return createdNews
   }
 
   async updateNews(
@@ -39,19 +40,19 @@ export class NewsService {
       { _id: newsId },
       { ...updateNewsDto, lastEditedBy: editorName, lastEditedAt: Date.now() }, // TODO: How can you handle different time zones?
       { new: true }
-    );
+    )
   }
 
   async deleteNews(newsId: string) {
-    return await this.newsModel.findOneAndRemove({ _id: newsId }).exec();
+    return await this.newsModel.findOneAndRemove({ _id: newsId }).exec()
   }
 
   async getFrontPageNews() {
-    let frontPageNews: INews[] = [];
+    let frontPageNews: INews[] = []
 
     // Get breaking news first
-    const breakingNews = await this.getBreakingNews();
-    if (breakingNews) frontPageNews.push(breakingNews);
+    const breakingNews = await this.getBreakingNews()
+    if (breakingNews) frontPageNews.push(breakingNews)
 
     // Get up to 4 news from each category
     for (const category of newsCategories) {
@@ -60,21 +61,21 @@ export class NewsService {
           .find({ category })
           .limit(4)
           .sort({ createdAt: -1 })
-          .select('-views');
+          .select('-views')
 
-        frontPageNews = [...frontPageNews, ...newsItems];
+        frontPageNews = [...frontPageNews, ...newsItems]
       } catch (err) {
-        console.error(err);
+        console.error(err)
       }
     }
 
-    await this.increaseViewsForNews(frontPageNews);
+    await this.increaseViewsForNews(frontPageNews)
 
-    return frontPageNews;
+    return frontPageNews
   }
 
   async increaseViewsForNews(newsArray: INews[]) {
-    const newsIds = newsArray.map((news) => news._id);
+    const newsIds = newsArray.map((news) => news._id)
 
     await this.newsModel
       .updateMany(
@@ -82,6 +83,6 @@ export class NewsService {
         { $inc: { views: 1 } },
         { new: true }
       )
-      .exec();
+      .exec()
   }
 }

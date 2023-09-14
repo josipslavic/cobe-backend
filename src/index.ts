@@ -1,28 +1,29 @@
-import express from 'express';
-import bodyParser from 'body-parser';
-import { userRouter } from './routes/user';
-import { newsRouter } from './routes/news';
-import { commentRouter } from './routes/comment';
-import { errorHandler } from './middleware/errorHandler';
-import { createConfigs } from './config';
-import { swaggerDocs } from './swagger-docs';
-import 'dotenv/config';
+import bodyParser from 'body-parser'
+import 'dotenv/config'
+import express from 'express'
 
-const app = express();
-const port = 3000;
+import { createConfigs } from './config'
+import { errorHandler } from './middleware/errorHandler'
+import { commentRouter } from './routes/comment'
+import { newsRouter } from './routes/news'
+import { userRouter } from './routes/user'
+import { swaggerDocs } from './swagger-docs'
 
-app.use(bodyParser.json());
+const app = express()
+const port = 3000
 
-app.use('/uploads', express.static('uploads'));
+app.use(bodyParser.json())
 
-app.use('/auth', userRouter);
-app.use('/news', newsRouter);
-app.use('/comment', commentRouter);
+app.use('/uploads', express.static('uploads'))
 
-app.use(errorHandler);
+app.use('/auth', userRouter)
+app.use('/news', newsRouter)
+app.use('/comment', commentRouter)
+
+app.use(errorHandler)
 
 app.listen(port, () => {
-  createConfigs();
-  console.log(`App running on port ${port}`);
-  swaggerDocs(app, port);
-});
+  createConfigs()
+  console.log(`App running on port ${port}`)
+  swaggerDocs(app, port)
+})

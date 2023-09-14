@@ -1,1 +1,1 @@
-export const newsCategories = ['worldwide', 'local', 'sport'];
+export const newsCategories = ['worldwide', 'local', 'sport']

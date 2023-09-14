@@ -6,4 +6,4 @@ export const statusCodes = {
   notFound: 404,
   conflict: 409,
   internal: 500,
-};
+}

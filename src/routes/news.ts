@@ -1,21 +1,22 @@
-import { Router } from 'express';
-import { NewsService } from '../services/news.service';
-import { NewsController } from '../controllers/news.controller';
-import { validateBody } from '../middleware/validateBody';
-import { NewsDto, NewsModel } from '../models/News';
-import { isAuth } from '../middleware/isAuth';
-import { upload } from '../utils/multerUpload';
-import { requireRoles } from '../middleware/requireRoles';
-import { UserRoles } from '../enums/UserRoles';
+import { Router } from 'express'
 
-export const newsRouter = Router();
+import { NewsController } from '../controllers/news.controller'
+import { UserRoles } from '../enums/UserRoles'
+import { isAuth } from '../middleware/isAuth'
+import { requireRoles } from '../middleware/requireRoles'
+import { validateBody } from '../middleware/validateBody'
+import { NewsDto, NewsModel } from '../models/News'
+import { NewsService } from '../services/news.service'
+import { upload } from '../utils/multerUpload'
 
-const newsService = new NewsService(NewsModel);
-const newsController = new NewsController(newsService);
+export const newsRouter = Router()
 
-newsRouter.get('/front-page', newsController.getFrontPage);
+const newsService = new NewsService(NewsModel)
+const newsController = new NewsController(newsService)
 
-newsRouter.get('/:newsId', newsController.getNewsById);
+newsRouter.get('/front-page', newsController.getFrontPage)
+
+newsRouter.get('/:newsId', newsController.getNewsById)
 
 newsRouter.post(
   '/',
@@ -24,7 +25,7 @@ newsRouter.post(
   isAuth,
   requireRoles([UserRoles.ADMIN, UserRoles.EDITOR]),
   newsController.createNews
-);
+)
 
 newsRouter.patch(
   '/:newsId',
@@ -33,13 +34,13 @@ newsRouter.patch(
   isAuth,
   requireRoles([UserRoles.ADMIN, UserRoles.EDITOR]),
   newsController.updateNews
-);
+)
 
 newsRouter.delete(
   '/:newsId',
   isAuth,
   requireRoles([UserRoles.ADMIN]),
   newsController.deleteNews
-);
+)
 
-newsRouter.post('/populate/:query', newsController.populateData);
+newsRouter.post('/populate/:query', newsController.populateData)

@@ -1,1 +1,1 @@
-export const DELETE_SUCCESS = 'Deleted successfully';
+export const DELETE_SUCCESS = 'Deleted successfully'

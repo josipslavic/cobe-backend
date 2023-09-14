@@ -1,9 +1,10 @@
-import { NextFunction, Request, Response } from 'express';
-import { UserService } from '../services/user.service';
-import { commonErrors } from '../constants/commonErrors';
-import { signJWT } from '../utils/signJwt';
-import { comparePassword } from '../utils/comparePassword';
-import { successResponses } from '../constants/successRespones';
+import { NextFunction, Request, Response } from 'express'
+
+import { commonErrors } from '../constants/commonErrors'
+import { successResponses } from '../constants/successRespones'
+import { UserService } from '../services/user.service'
+import { comparePassword } from '../utils/comparePassword'
+import { signJWT } from '../utils/signJWT'
 
 export class UserController {
   constructor(private userService: UserService) {}
@@ -12,40 +13,40 @@ export class UserController {
     try {
       const existingUser = await this.userService.findUserByEmail(
         req.body.email
-      );
-      if (existingUser) throw commonErrors.emailTaken;
+      )
+      if (existingUser) throw commonErrors.emailTaken
 
-      const user = await this.userService.createUser(req.body);
+      const user = await this.userService.createUser(req.body)
 
-      const token = signJWT(user);
+      const token = signJWT(user)
 
-      return successResponses.created(res, { user: existingUser, token });
+      return successResponses.created(res, { user: existingUser, token })
     } catch (error) {
-      next(error);
+      next(error)
     }
-  };
+  }
 
   login = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      if (!req.body.email || !req.body.password) throw commonErrors.authFailed;
+      if (!req.body.email || !req.body.password) throw commonErrors.authFailed
 
       const existingUser = await this.userService.findUserByEmail(
         req.body.email
-      );
-      if (!existingUser) throw commonErrors.invalidCredentials;
+      )
+      if (!existingUser) throw commonErrors.invalidCredentials
 
       const isPasswordMatching = await comparePassword(
         req.body.password,
         existingUser.password
-      );
+      )
 
-      if (!isPasswordMatching) throw commonErrors.invalidCredentials;
+      if (!isPasswordMatching) throw commonErrors.invalidCredentials
 
-      const token = signJWT(existingUser);
+      const token = signJWT(existingUser)
 
-      return successResponses.ok(res, { user: existingUser, token });
+      return successResponses.ok(res, { user: existingUser, token })
     } catch (error) {
-      next(error);
+      next(error)
     }
-  };
+  }
 }
