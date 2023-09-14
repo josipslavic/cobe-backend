@@ -38,7 +38,7 @@ export class NewsService {
   ) {
     return await this.newsModel.findOneAndUpdate(
       { _id: newsId },
-      { ...updateNewsDto, lastEditedBy: editorName, lastEditedAt: Date.now() }, // TODO: How can you handle different time zones?
+      { ...updateNewsDto, lastEditedBy: editorName, lastEditedAt: Date.now() },
       { new: true }
     )
   }
