@@ -1,18 +1,18 @@
 import { Router } from 'express'
 
+import { container } from '../config/inversify'
 import { NewsController } from '../controllers/news.controller'
 import { UserRoles } from '../enums/UserRoles'
 import { isAuth } from '../middleware/isAuth'
 import { requireRoles } from '../middleware/requireRoles'
 import { validateBody } from '../middleware/validateBody'
-import { NewsDto, NewsModel } from '../models/News'
-import { NewsService } from '../services/news.service'
+import { NewsDto } from '../models/News'
+import { TYPES } from '../types/types'
 import { upload } from '../utils/multerUpload'
 
 export const newsRouter = Router()
 
-const newsService = new NewsService(NewsModel)
-const newsController = new NewsController(newsService)
+const newsController = container.get<NewsController>(TYPES.NewsController)
 
 newsRouter.get('/front-page', newsController.getFrontPage)
 

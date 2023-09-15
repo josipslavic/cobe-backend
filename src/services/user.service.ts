@@ -1,11 +1,16 @@
 import { Model } from 'mongoose'
+import { inject, injectable } from 'inversify'
 
 import { IUser } from '../interfaces/user'
 import { UserDto } from '../models/User'
+import { TYPES } from '../types/types'
 import { hashPassword } from '../utils/hashPassword'
 
+@injectable()
 export class UserService {
-  constructor(public readonly userModel: Model<IUser>) {
+  constructor(
+    @inject(TYPES.UserModel) public readonly userModel: Model<IUser>
+  ) {
     this.userModel = userModel
   }
 

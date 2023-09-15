@@ -1,10 +1,15 @@
 import { Model } from 'mongoose'
+import { inject, injectable } from 'inversify'
 
 import { IComment } from '../interfaces/comment'
 import { CommentDto } from '../models/Comment'
+import { TYPES } from '../types/types'
 
+@injectable()
 export class CommentService {
-  constructor(public readonly commentModel: Model<IComment>) {
+  constructor(
+    @inject(TYPES.CommentModel) public readonly commentModel: Model<IComment>
+  ) {
     this.commentModel = commentModel
   }
 

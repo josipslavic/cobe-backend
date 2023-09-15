@@ -1,6 +1,7 @@
 import axios from 'axios'
 import 'dotenv/config'
 import { NextFunction, Request, Response } from 'express'
+import { inject, injectable } from 'inversify'
 
 import { commonErrors } from '../constants/commonErrors'
 import * as MESSAGES from '../constants/messages'
@@ -11,12 +12,14 @@ import { INews } from '../interfaces/news'
 import { INewsAPIData } from '../interfaces/newsApiData'
 import { RequestWithUserId } from '../interfaces/requestWithUserId'
 import { NewsService } from '../services/news.service'
+import { TYPES } from '../types/types'
 import { deletePublicFile, uploadPublicFile } from '../utils/image-upload'
 import { isValidMongoId } from '../utils/isValidMongoId'
 import { trimDescription } from '../utils/trimDescription'
 
+@injectable()
 export class NewsController {
-  constructor(private newsService: NewsService) {}
+  constructor(@inject(TYPES.NewsService) private newsService: NewsService) {}
 
   getNewsById = async (req: Request, res: Response, next: NextFunction) => {
     try {

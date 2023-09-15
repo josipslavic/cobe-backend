@@ -1,20 +1,19 @@
 import { Router } from 'express'
 
+import { container } from '../config/inversify'
 import { CommentController } from '../controllers/comment.controller'
 import { UserRoles } from '../enums/UserRoles'
 import { isAuth } from '../middleware/isAuth'
 import { requireRoles } from '../middleware/requireRoles'
 import { validateBody } from '../middleware/validateBody'
-import { CommentDto, CommentModel } from '../models/Comment'
-import { NewsModel } from '../models/News'
-import { CommentService } from '../services/comment.service'
-import { NewsService } from '../services/news.service'
+import { CommentDto } from '../models/Comment'
+import { TYPES } from '../types/types'
 
 export const commentRouter = Router()
 
-const commentService = new CommentService(CommentModel)
-const newsService = new NewsService(NewsModel)
-const commentController = new CommentController(commentService, newsService)
+const commentController = container.get<CommentController>(
+  TYPES.CommentController
+)
 
 commentRouter.get('/:commentId', commentController.getCommentById)
 

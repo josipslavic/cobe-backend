@@ -1,11 +1,16 @@
 import { Model } from 'mongoose'
+import { inject, injectable } from 'inversify'
 
 import { newsCategories } from '../constants/newsCategories'
 import { INews } from '../interfaces/news'
 import { NewsDto } from '../models/News'
+import { TYPES } from '../types/types'
 
+@injectable()
 export class NewsService {
-  constructor(public readonly newsModel: Model<INews>) {
+  constructor(
+    @inject(TYPES.NewsModel) public readonly newsModel: Model<INews>
+  ) {
     this.newsModel = newsModel
   }
 

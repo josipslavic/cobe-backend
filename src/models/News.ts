@@ -7,7 +7,6 @@ import {
   MinLength,
 } from 'class-validator'
 import mongoose, { Schema } from 'mongoose'
-import 'reflect-metadata'
 
 import { newsCategories } from '../constants/newsCategories'
 import { INews } from '../interfaces/news'
