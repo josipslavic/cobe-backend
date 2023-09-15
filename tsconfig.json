@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2016",
+    "lib": ["es6", "dom"],
     "module": "commonjs",
     "allowJs": true,
     "outDir": "build",
@@ -11,6 +12,7 @@
     "resolveJsonModule": true,
     "strictPropertyInitialization": false,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "types": ["reflect-metadata"]
   }
 }

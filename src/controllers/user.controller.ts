@@ -1,13 +1,16 @@
 import { NextFunction, Request, Response } from 'express'
+import { inject, injectable } from 'inversify'
 
 import { commonErrors } from '../constants/commonErrors'
 import { successResponses } from '../constants/successRespones'
 import { UserService } from '../services/user.service'
+import { TYPES } from '../types/types'
 import { comparePassword } from '../utils/comparePassword'
 import { signJWT } from '../utils/signJWT'
 
+@injectable()
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(@inject(TYPES.UserService) private userService: UserService) {}
 
   register = async (req: Request, res: Response, next: NextFunction) => {
     try {

@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
+import { inject, injectable } from 'inversify'
 
 import { commonErrors } from '../constants/commonErrors'
 import * as MESSAGES from '../constants/messages'
@@ -6,12 +7,14 @@ import { successResponses } from '../constants/successRespones'
 import { RequestWithUserId } from '../interfaces/requestWithUserId'
 import { CommentService } from '../services/comment.service'
 import { NewsService } from '../services/news.service'
+import { TYPES } from '../types/types'
 import { isValidMongoId } from '../utils/isValidMongoId'
 
+@injectable()
 export class CommentController {
   constructor(
-    private commentService: CommentService,
-    private newsService: NewsService
+    @inject(TYPES.CommentService) private commentService: CommentService,
+    @inject(TYPES.NewsService) private newsService: NewsService
   ) {}
 
   getCommentById = async (req: Request, res: Response, next: NextFunction) => {

@@ -1,6 +1,7 @@
 import bodyParser from 'body-parser'
 import 'dotenv/config'
 import express from 'express'
+import 'reflect-metadata'
 
 import { createConfigs } from './config'
 import { errorHandler } from './middleware/errorHandler'
