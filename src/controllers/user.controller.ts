@@ -20,7 +20,7 @@ export class UserController {
 
       const token = signJWT(user)
 
-      return successResponses.created(res, { user: existingUser, token })
+      return successResponses.created(res, { user, token })
     } catch (error) {
       next(error)
     }

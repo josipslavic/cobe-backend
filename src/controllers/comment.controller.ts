@@ -62,7 +62,7 @@ export class CommentController {
       if (!isValidMongoId(req.params.commentId))
         throw commonErrors.invalidMongoId
 
-      const existingComment = this.commentService.getCommentById(
+      const existingComment = await this.commentService.getCommentById(
         req.params.commentId
       )
       if (!existingComment) throw commonErrors.commentNotFound
