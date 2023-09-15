@@ -64,8 +64,7 @@ const NewsSchema = new Schema<INews>(
     },
     imageId: {
       type: String,
-      required: true,
-      default: null,
+      required: false,
     },
     category: {
       type: String,
