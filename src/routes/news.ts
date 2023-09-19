@@ -1,6 +1,6 @@
 import { Router } from 'express'
 
-import { container } from '../config/inversify'
+import { inject, injectable } from 'inversify'
 import { NewsController } from '../controllers/news.controller'
 import { UserRoles } from '../enums/UserRoles'
 import { isAuth } from '../middleware/isAuth'
@@ -10,37 +10,58 @@ import { NewsDto } from '../models/News'
 import { TYPES } from '../types/types'
 import { upload } from '../utils/multerUpload'
 
-export const newsRouter = Router()
+@injectable()
+export class NewsRoutes {
+  private readonly newsController: NewsController
+  private readonly router: Router
 
-const newsController = container.get<NewsController>(TYPES.NewsController)
+  constructor(
+    @inject(TYPES.NewsController)
+    newsController: NewsController
+  ) {
+    this.newsController = newsController
+    this.router = Router()
+    this.initRouter()
+  }
 
-newsRouter.get('/front-page', newsController.getFrontPage)
+  getRouter(): Router {
+    return this.router
+  }
 
-newsRouter.get('/:newsId', newsController.getNewsById)
+  getPath(): string {
+    return '/news'
+  }
 
-newsRouter.post(
-  '/',
-  upload.single('image'),
-  validateBody(NewsDto),
-  isAuth,
-  requireRoles([UserRoles.ADMIN, UserRoles.EDITOR]),
-  newsController.createNews
-)
+  private initRouter() {
+    this.router.get('/front-page', this.newsController.getFrontPage)
 
-newsRouter.patch(
-  '/:newsId',
-  upload.single('image'),
-  validateBody(NewsDto, true),
-  isAuth,
-  requireRoles([UserRoles.ADMIN, UserRoles.EDITOR]),
-  newsController.updateNews
-)
+    this.router.get('/:newsId', this.newsController.getNewsById)
 
-newsRouter.delete(
-  '/:newsId',
-  isAuth,
-  requireRoles([UserRoles.ADMIN]),
-  newsController.deleteNews
-)
+    this.router.post(
+      '/',
+      upload.single('image'),
+      validateBody(NewsDto),
+      isAuth,
+      requireRoles([UserRoles.ADMIN, UserRoles.EDITOR]),
+      this.newsController.createNews
+    )
 
-newsRouter.post('/populate/:query', newsController.populateData)
+    this.router.patch(
+      '/:newsId',
+      upload.single('image'),
+      validateBody(NewsDto, true),
+      isAuth,
+      requireRoles([UserRoles.ADMIN, UserRoles.EDITOR]),
+      this.newsController.updateNews
+    )
+
+    this.router.delete(
+      '/:newsId',
+      isAuth,
+      requireRoles([UserRoles.ADMIN]),
+      this.newsController.deleteNews
+    )
+
+    this.router.post('/populate/:query', this.newsController.populateData)
+  }
+}

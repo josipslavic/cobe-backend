@@ -10,6 +10,9 @@ import { IUser } from '../interfaces/user'
 import { CommentModel } from '../models/Comment'
 import { NewsModel } from '../models/News'
 import { UserModel } from '../models/User'
+import { CommentRoutes } from '../routes/comment'
+import { NewsRoutes } from '../routes/news'
+import { UserRoutes } from '../routes/user'
 import { CommentService } from '../services/comment.service'
 import { NewsService } from '../services/news.service'
 import { UserService } from '../services/user.service'
@@ -30,3 +33,7 @@ container.bind<CommentService>(TYPES.CommentService).to(CommentService)
 container.bind<UserController>(TYPES.UserController).to(UserController)
 container.bind<NewsController>(TYPES.NewsController).to(NewsController)
 container.bind<CommentController>(TYPES.CommentController).to(CommentController)
+
+container.bind<UserRoutes>(TYPES.UserRoutes).to(UserRoutes)
+container.bind<NewsRoutes>(TYPES.NewsRoutes).to(NewsRoutes)
+container.bind<CommentRoutes>(TYPES.CommentRoutes).to(CommentRoutes)
