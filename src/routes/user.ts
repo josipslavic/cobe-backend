@@ -1,15 +1,40 @@
 import { Router } from 'express'
 
-import { container } from '../config/inversify'
+import { inject, injectable } from 'inversify'
 import { UserController } from '../controllers/user.controller'
 import { validateBody } from '../middleware/validateBody'
 import { UserDto } from '../models/User'
 import { TYPES } from '../types/types'
 
-export const userRouter = Router()
+@injectable()
+export class UserRoutes {
+  private readonly userController: UserController
+  private readonly router: Router
 
-const userController = container.get<UserController>(TYPES.UserController)
+  constructor(
+    @inject(TYPES.UserController)
+    userController: UserController
+  ) {
+    this.userController = userController
+    this.router = Router()
+    this.initRouter()
+  }
 
-userRouter.post('/register', validateBody(UserDto), userController.register)
+  getRouter(): Router {
+    return this.router
+  }
 
-userRouter.post('/login', userController.login)
+  getPath(): string {
+    return '/auth'
+  }
+
+  private initRouter() {
+    this.router.post(
+      '/register',
+      validateBody(UserDto),
+      this.userController.register
+    )
+
+    this.router.post('/login', this.userController.login)
+  }
+}

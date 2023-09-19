@@ -10,4 +10,8 @@ export const TYPES = {
   UserController: Symbol.for('UserController'),
   NewsController: Symbol.for('NewsController'),
   CommentController: Symbol.for('CommentController'),
+
+  UserRoutes: Symbol.for('UserRoutes'),
+  NewsRoutes: Symbol.for('NewsRoutes'),
+  CommentRoutes: Symbol.for('CommentRoutes'),
 }

@@ -1,6 +1,6 @@
 import { Router } from 'express'
 
-import { container } from '../config/inversify'
+import { inject, injectable } from 'inversify'
 import { CommentController } from '../controllers/comment.controller'
 import { UserRoles } from '../enums/UserRoles'
 import { isAuth } from '../middleware/isAuth'
@@ -9,24 +9,43 @@ import { validateBody } from '../middleware/validateBody'
 import { CommentDto } from '../models/Comment'
 import { TYPES } from '../types/types'
 
-export const commentRouter = Router()
+@injectable()
+export class CommentRoutes {
+  private readonly commentController: CommentController
+  private readonly router: Router
 
-const commentController = container.get<CommentController>(
-  TYPES.CommentController
-)
+  constructor(
+    @inject(TYPES.CommentController)
+    commentController: CommentController
+  ) {
+    this.commentController = commentController
+    this.router = Router()
+    this.initRouter()
+  }
 
-commentRouter.get('/:commentId', commentController.getCommentById)
+  getRouter(): Router {
+    return this.router
+  }
 
-commentRouter.post(
-  '/:newsId',
-  validateBody(CommentDto),
-  isAuth,
-  commentController.addComment
-)
+  getPath(): string {
+    return '/comment'
+  }
 
-commentRouter.delete(
-  '/:commentId',
-  isAuth,
-  requireRoles([UserRoles.ADMIN]),
-  commentController.deleteComment
-)
+  private initRouter() {
+    this.router.get('/:commentId', this.commentController.getCommentById)
+
+    this.router.post(
+      '/:newsId',
+      validateBody(CommentDto),
+      isAuth,
+      this.commentController.addComment
+    )
+
+    this.router.delete(
+      '/:commentId',
+      isAuth,
+      requireRoles([UserRoles.ADMIN]),
+      this.commentController.deleteComment
+    )
+  }
+}

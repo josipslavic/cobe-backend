@@ -5,10 +5,8 @@ import 'reflect-metadata'
 
 import { createConfigs } from './config'
 import { errorHandler } from './middleware/errorHandler'
-import { commentRouter } from './routes/comment'
-import { newsRouter } from './routes/news'
-import { userRouter } from './routes/user'
 import { swaggerDocs } from './swagger-docs'
+import { initializeRoutes } from './utils/initializeRoutes'
 
 const app = express()
 const port = 3000
@@ -17,9 +15,9 @@ app.use(bodyParser.json())
 
 app.use('/uploads', express.static('uploads'))
 
-app.use('/auth', userRouter)
-app.use('/news', newsRouter)
-app.use('/comment', commentRouter)
+initializeRoutes().forEach((route) =>
+  app.use(route.getPath(), route.getRouter())
+)
 
 app.use(errorHandler)
 
