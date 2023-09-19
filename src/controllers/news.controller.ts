@@ -19,7 +19,9 @@ import { trimDescription } from '../utils/trimDescription'
 
 @injectable()
 export class NewsController {
-  constructor(@inject(TYPES.NewsService) private newsService: NewsService) {}
+  constructor(@inject(TYPES.NewsService) private newsService: NewsService) {
+    this.newsService = newsService
+  }
 
   getNewsById = async (req: Request, res: Response, next: NextFunction) => {
     try {

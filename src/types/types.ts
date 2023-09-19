@@ -1,13 +1,13 @@
 export const TYPES = {
   UserModel: Symbol.for('UserModel'),
-  UserService: Symbol.for('UserService'),
-  UserController: Symbol.for('UserController'),
-
   NewsModel: Symbol.for('NewsModel'),
-  NewsService: Symbol.for('NewsService'),
-  NewsController: Symbol.for('NewsController'),
-
   CommentModel: Symbol.for('CommentModel'),
+
+  UserService: Symbol.for('UserService'),
+  NewsService: Symbol.for('NewsService'),
   CommentService: Symbol.for('CommentService'),
+
+  UserController: Symbol.for('UserController'),
+  NewsController: Symbol.for('NewsController'),
   CommentController: Symbol.for('CommentController'),
 }
