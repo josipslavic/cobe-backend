@@ -15,7 +15,10 @@ export class CommentController {
   constructor(
     @inject(TYPES.CommentService) private commentService: CommentService,
     @inject(TYPES.NewsService) private newsService: NewsService
-  ) {}
+  ) {
+    this.commentService = commentService
+    this.newsService = newsService
+  }
 
   getCommentById = async (req: Request, res: Response, next: NextFunction) => {
     try {

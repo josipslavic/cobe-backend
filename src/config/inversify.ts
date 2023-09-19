@@ -18,15 +18,15 @@ import { TYPES } from '../types/types'
 export const container = new Container()
 
 container.bind<Model<IUser>>(TYPES.UserModel).toConstantValue(UserModel)
-container.bind<UserService>(TYPES.UserService).to(UserService)
-container.bind<UserController>(TYPES.UserController).to(UserController)
-
 container.bind<Model<INews>>(TYPES.NewsModel).toConstantValue(NewsModel)
-container.bind<NewsService>(TYPES.NewsService).to(NewsService)
-container.bind<NewsController>(TYPES.NewsController).to(NewsController)
-
 container
   .bind<Model<IComment>>(TYPES.CommentModel)
   .toConstantValue(CommentModel)
+
+container.bind<UserService>(TYPES.UserService).to(UserService)
+container.bind<NewsService>(TYPES.NewsService).to(NewsService)
 container.bind<CommentService>(TYPES.CommentService).to(CommentService)
+
+container.bind<UserController>(TYPES.UserController).to(UserController)
+container.bind<NewsController>(TYPES.NewsController).to(NewsController)
 container.bind<CommentController>(TYPES.CommentController).to(CommentController)

@@ -10,7 +10,9 @@ import { signJWT } from '../utils/signJWT'
 
 @injectable()
 export class UserController {
-  constructor(@inject(TYPES.UserService) private userService: UserService) {}
+  constructor(@inject(TYPES.UserService) private userService: UserService) {
+    this.userService = userService
+  }
 
   register = async (req: Request, res: Response, next: NextFunction) => {
     try {
