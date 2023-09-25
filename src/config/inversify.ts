@@ -17,6 +17,7 @@ import { CommentService } from '../services/comment.service'
 import { NewsService } from '../services/news.service'
 import { UserService } from '../services/user.service'
 import { TYPES } from '../types/types'
+import { AppBootstrap } from '../app-bootstrap'
 
 export const container = new Container()
 
@@ -37,3 +38,5 @@ container.bind<CommentController>(TYPES.CommentController).to(CommentController)
 container.bind<UserRoutes>(TYPES.UserRoutes).to(UserRoutes)
 container.bind<NewsRoutes>(TYPES.NewsRoutes).to(NewsRoutes)
 container.bind<CommentRoutes>(TYPES.CommentRoutes).to(CommentRoutes)
+
+container.bind<AppBootstrap>(TYPES.AppBootstrap).to(AppBootstrap)
