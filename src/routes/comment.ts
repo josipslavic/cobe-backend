@@ -8,9 +8,10 @@ import { requireRoles } from '../middleware/requireRoles'
 import { validateBody } from '../middleware/validateBody'
 import { CommentDto } from '../models/Comment'
 import { TYPES } from '../types/types'
+import { IRoute } from '../interfaces/route'
 
 @injectable()
-export class CommentRoutes {
+export class CommentRoutes implements IRoute {
   private readonly commentController: CommentController
   private readonly router: Router
 

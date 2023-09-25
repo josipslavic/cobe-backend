@@ -14,4 +14,6 @@ export const TYPES = {
   UserRoutes: Symbol.for('UserRoutes'),
   NewsRoutes: Symbol.for('NewsRoutes'),
   CommentRoutes: Symbol.for('CommentRoutes'),
+
+  AppBootstrap: Symbol.for('AppBootstrap'),
 }

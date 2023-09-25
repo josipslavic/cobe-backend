@@ -9,9 +9,10 @@ import { validateBody } from '../middleware/validateBody'
 import { NewsDto } from '../models/News'
 import { TYPES } from '../types/types'
 import { upload } from '../utils/multerUpload'
+import { IRoute } from '../interfaces/route'
 
 @injectable()
-export class NewsRoutes {
+export class NewsRoutes implements IRoute {
   private readonly newsController: NewsController
   private readonly router: Router
 
